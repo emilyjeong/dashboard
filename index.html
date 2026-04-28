@@ -132,11 +132,11 @@ font-size: 10px; color: var(–text2); line-height: 1.5;
 .sep { color: var(–border2); font-size: 10px; }
 
 /* ── SENTIMENT ── */
-.sent-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+.sent-row { display: flex; flex-direction: row; gap: 6px; width: 100%; }
 .sent-card {
+flex: 1; min-width: 0; overflow: hidden;
 background: var(–card); border: 1px solid var(–border);
 border-radius: 10px; padding: 14px 12px;
-min-width: 0; overflow: hidden;
 }
 .sent-name { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
 .fg-wrap { display: flex; flex-direction: column; align-items: center; }
@@ -157,8 +157,8 @@ border-radius: 6px; padding: 7px 8px;
 .vix-alert strong { color: var(–green); font-family: var(–mono); }
 
 /* ── INFO ROW ── */
-.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
-.info-card { background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; min-width: 0; overflow: hidden; }
+.info-row { display: flex; flex-direction: row; gap: 6px; width: 100%; }
+.info-card { flex: 1; min-width: 0; overflow: hidden; background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; }
 .info-name  { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
 .info-num   { font-family: var(–mono); font-size: 22px; font-weight: 600; line-height: 1; word-break: break-all; }
 .info-unit  { font-family: var(–mono); font-size: 10px; color: var(–text2); }
@@ -210,7 +210,7 @@ to   { opacity: 1; transform: translateY(0); }
     </a>
   </div>
 </div>
-<div class="loading-bar active" id="loadingBar"></div>
+<div class="loading-bar" id="loadingBar"></div>
 
 <!-- 3대 유동성 -->
 
@@ -229,7 +229,7 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="liq-id">WRESBAL · 주별</div>
   </div>
   <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--green)" id="res-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-val" style="color:var(--green)" id="res-val">--</div>
     <div class="liq-chg" id="res-chg"></div>
     <div class="liq-date" id="res-date"></div>
   </div>
@@ -247,7 +247,7 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="liq-id">WTREGEN · 주별</div>
   </div>
   <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--yellow)" id="tga-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-val" style="color:var(--yellow)" id="tga-val">--</div>
     <div class="liq-chg" id="tga-chg"></div>
     <div class="liq-date" id="tga-date"></div>
   </div>
@@ -265,7 +265,7 @@ to   { opacity: 1; transform: translateY(0); }
     <div class="liq-id">RRPONTSYD · 일별</div>
   </div>
   <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--blue)" id="rrp-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-val" style="color:var(--blue)" id="rrp-val">--</div>
     <div class="liq-chg" id="rrp-chg"></div>
     <div class="liq-date" id="rrp-date"></div>
   </div>
@@ -464,9 +464,19 @@ async function loadAll() {
     // DFF
     const dffVal = parseFloat(dffObs[0].value);
     document.getElementById('dff-val').innerHTML = `${dffVal.toFixed(2)}<span class="info-unit">%</span>`;
+    // FOMC 날짜 배열 (2026-2027 공식 확정)
+    const FOMC_DATES = [
+      '2026-01-28','2026-03-18','2026-04-29','2026-06-17',
+      '2026-07-29','2026-09-16','2026-10-28','2026-12-09',
+      '2027-01-27','2027-03-17','2027-04-28','2027-06-09',
+      '2027-07-28','2027-09-15','2027-10-27','2027-12-08',
+    ];
+    const today = new Date(); today.setHours(0,0,0,0);
+    const nextFomc = FOMC_DATES.find(d => new Date(d) >= today);
+    const nextFomcStr = nextFomc ? nextFomc.replace(/-/g,'.') : '일정 확인 필요';
     document.getElementById('dff-sub').innerHTML =
       `기준: ${fmtDate(dffObs[0].date)}<br><span style="color:var(--text3)">다음 FOMC</span><br>`
-      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">2025.05.07</span>`;
+      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">${nextFomcStr}</span>`;
 
     // 한국 M2 (FRED: billions of KRW → 조 변환)
     const m2Curr = parseFloat(m2Obs[0].value);
