@@ -366,42 +366,27 @@ to   { opacity: 1; transform: translateY(0); }
 
 <script>
 const FRED_KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
+const PROXY = 'https://corsproxy.io/?';
 
-// ── FRED JSONP (CORS 우회) ──
-function fredFetch(seriesId, limit = 14) {
-  return new Promise((resolve, reject) => {
-    const cbName = 'cb_' + seriesId.replace(/[^a-zA-Z0-9]/g,'') + '_' + Date.now();
-    const script = document.createElement('script');
-    const timer = setTimeout(() => {
-      delete window[cbName]; script.remove();
-      reject(new Error('timeout: ' + seriesId));
-    }, 12000);
-    window[cbName] = (data) => {
-      clearTimeout(timer); delete window[cbName]; script.remove();
-      if (data.error_message) { reject(new Error(data.error_message)); return; }
-      resolve(data.observations.filter(o => o.value !== '.' && o.value !== ''));
-    };
-    script.src = 'https://api.stlouisfed.org/fred/series/observations'
-      + '?series_id=' + seriesId
-      + '&api_key=' + FRED_KEY
-      + '&file_type=json&sort_order=desc&limit=' + limit
-      + '&callback=' + cbName;
-    script.onerror = () => { clearTimeout(timer); delete window[cbName]; script.remove(); reject(new Error('script error: ' + seriesId)); };
-    document.head.appendChild(script);
-  });
+// ── FRED fetch (CORS 프록시) ──
+async function fredFetch(seriesId, limit = 14) {
+  const target = 'https://api.stlouisfed.org/fred/series/observations'
+    + '?series_id=' + seriesId + '&api_key=' + FRED_KEY
+    + '&file_type=json&sort_order=desc&limit=' + limit;
+  const res = await fetch(PROXY + encodeURIComponent(target));
+  if (!res.ok) throw new Error('FRED ' + seriesId + ' ' + res.status);
+  const json = await res.json();
+  return json.observations.filter(o => o.value !== '.' && o.value !== '');
 }
 
-// ── Fear & Greed JSONP ──
-function fetchFearGreed() {
-  return new Promise((resolve) => {
-    // CNN 공식 엔드포인트 시도
-    fetch('https://production.dataviz.cnn.io/index/fearandgreed/graphdata', {
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(r => r.json())
-    .then(d => resolve(d?.fear_and_greed?.score ?? null))
-    .catch(() => resolve(null));
-  });
+// ── Fear & Greed (CORS 프록시) ──
+async function fetchFearGreed() {
+  try {
+    const target = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const res = await fetch(PROXY + encodeURIComponent(target));
+    const d = await res.json();
+    return d?.fear_and_greed?.score ?? null;
+  } catch(e) { return null; }
 }
 
 // ── 포맷 ──
