@@ -367,171 +367,152 @@ to   { opacity: 1; transform: translateY(0); }
 <script>
 const FRED_KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
 
-// ── FRED fetch ──
-async function fredFetch(seriesId, limit = 14) {
-  const url = `https://api.stlouisfed.org/fred/series/observations`
-    + `?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`FRED ${seriesId} ${res.status}`);
-  const json = await res.json();
-  return json.observations.filter(o => o.value !== '.' && o.value !== '');
+// ── FRED JSONP (CORS 우회) ──
+function fredFetch(seriesId, limit = 14) {
+  return new Promise((resolve, reject) => {
+    const cbName = 'cb_' + seriesId.replace(/[^a-zA-Z0-9]/g,'') + '_' + Date.now();
+    const script = document.createElement('script');
+    const timer = setTimeout(() => {
+      delete window[cbName]; script.remove();
+      reject(new Error('timeout: ' + seriesId));
+    }, 12000);
+    window[cbName] = (data) => {
+      clearTimeout(timer); delete window[cbName]; script.remove();
+      if (data.error_message) { reject(new Error(data.error_message)); return; }
+      resolve(data.observations.filter(o => o.value !== '.' && o.value !== ''));
+    };
+    script.src = 'https://api.stlouisfed.org/fred/series/observations'
+      + '?series_id=' + seriesId
+      + '&api_key=' + FRED_KEY
+      + '&file_type=json&sort_order=desc&limit=' + limit
+      + '&callback=' + cbName;
+    script.onerror = () => { clearTimeout(timer); delete window[cbName]; script.remove(); reject(new Error('script error: ' + seriesId)); };
+    document.head.appendChild(script);
+  });
 }
 
-// ── 값 포맷 ──
+// ── Fear & Greed JSONP ──
+function fetchFearGreed() {
+  return new Promise((resolve) => {
+    // CNN 공식 엔드포인트 시도
+    fetch('https://production.dataviz.cnn.io/index/fearandgreed/graphdata', {
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(r => r.json())
+    .then(d => resolve(d?.fear_and_greed?.score ?? null))
+    .catch(() => resolve(null));
+  });
+}
+
+// ── 포맷 ──
 function fmtT(val, divisor) {
-  const t = parseFloat(val) / divisor;
-  return '$' + t.toFixed(2) + 'T';
+  return '$' + (parseFloat(val) / divisor).toFixed(2) + 'T';
 }
 function fmtChg(curr, prev, divisor) {
-  const c = parseFloat(curr) / divisor;
-  const p = parseFloat(prev) / divisor;
-  const d = c - p;
+  const d = (parseFloat(curr) - parseFloat(prev)) / divisor;
   const sign = d >= 0 ? '+' : '';
   const color = d >= 0 ? 'var(--green)' : 'var(--red)';
   const arrow = d >= 0 ? '▲' : '▼';
-  return { html: `<span style="color:${color}">${arrow} ${sign}${d.toFixed(2)}T</span>`, isUp: d >= 0 };
+  return `<span style="color:${color}">${arrow} ${sign}${d.toFixed(2)}T</span>`;
 }
-function fmtDate(dateStr) {
-  return dateStr.replace(/-/g, '.');
-}
+function fmtDate(s) { return s.replace(/-/g, '.'); }
 
-// ── 유동성 카드 업데이트 ──
 function updateLiq(id, obs, divisor) {
-  const curr = obs[0], prev = obs[1];
-  document.getElementById(`${id}-val`).textContent = fmtT(curr.value, divisor);
-  const chg = fmtChg(curr.value, prev.value, divisor);
-  document.getElementById(`${id}-chg`).innerHTML = chg.html;
-  document.getElementById(`${id}-date`).textContent = fmtDate(curr.date);
+  document.getElementById(id+'-val').textContent = fmtT(obs[0].value, divisor);
+  document.getElementById(id+'-chg').innerHTML = fmtChg(obs[0].value, obs[1].value, divisor);
+  document.getElementById(id+'-date').textContent = fmtDate(obs[0].date);
 }
 
-// ── Fear & Greed 게이지 ──
 function updateGauge(score) {
-  // needle angle: score 0 = left(180°), score 100 = right(0°)
   const angleDeg = 180 - (score / 100) * 180;
   const angleRad = angleDeg * Math.PI / 180;
-  const r = 30;
-  const cx = 45, cy = 46;
-  const nx = cx + r * Math.cos(angleRad);
-  const ny = cy - r * Math.sin(angleRad);
+  const nx = 45 + 30 * Math.cos(angleRad);
+  const ny = 46 - 30 * Math.sin(angleRad);
   document.getElementById('fg-needle').setAttribute('x2', nx.toFixed(1));
   document.getElementById('fg-needle').setAttribute('y2', ny.toFixed(1));
-
-  // arc fill
-  const offset = 116 * (1 - score / 100);
-  document.getElementById('fg-arc-fill').setAttribute('stroke-dashoffset', offset.toFixed(1));
-
-  // color by zone
-  let color = 'var(--yellow)';
-  if (score <= 25) color = 'var(--red)';
-  else if (score <= 45) color = '#ff9a3c';
-  else if (score >= 75) color = 'var(--green)';
-  else if (score >= 55) color = '#7ed6a0';
+  document.getElementById('fg-arc-fill').setAttribute('stroke-dashoffset', (116*(1-score/100)).toFixed(1));
+  let color = score<=25?'var(--red)':score<=45?'#ff9a3c':score>=75?'var(--green)':score>=55?'#7ed6a0':'var(--yellow)';
   document.getElementById('fg-num').style.color = color;
   document.getElementById('fg-tag').style.color = color;
 }
 
-function getFgLabel(score) {
-  if (score <= 25) return '😨 EXTREME FEAR';
-  if (score <= 45) return '😟 FEAR';
-  if (score <= 55) return '😐 NEUTRAL';
-  if (score <= 75) return '😏 GREED';
+function getFgLabel(s) {
+  if (s<=25) return '😨 EXTREME FEAR';
+  if (s<=45) return '😟 FEAR';
+  if (s<=55) return '😐 NEUTRAL';
+  if (s<=75) return '😏 GREED';
   return '🤑 EXTREME GREED';
 }
 
-// ── VIX 색상 ──
 function vixColor(v) {
-  if (v >= 40) return 'var(--red)';
-  if (v >= 25) return 'var(--yellow)';
-  return 'var(--green)';
+  return v>=40?'var(--red)':v>=25?'var(--yellow)':'var(--green)';
 }
 
 // ── 메인 로드 ──
 async function loadAll() {
   const bar = document.getElementById('loadingBar');
   try {
-    const [resObs, tgaObs, rrpObs, m2Obs, vixObs, dffObs] = await Promise.all([
-      fredFetch('WRESBAL', 2),
-      fredFetch('WTREGEN', 2),
-      fredFetch('RRPONTSYD', 2),
-      fredFetch('MYAGM2KRM189S', 14),   // 14개로 YoY 계산
-      fredFetch('VIXCLS', 2),
-      fredFetch('DFF', 2),
-    ]);
+    // FRED는 순차적으로 (JSONP 동시 다발 방지)
+    const resObs = await fredFetch('WRESBAL', 2);
+    const tgaObs = await fredFetch('WTREGEN', 2);
+    const rrpObs = await fredFetch('RRPONTSYD', 2);
+    const vixObs = await fredFetch('VIXCLS', 2);
+    const dffObs = await fredFetch('DFF', 2);
+    const m2Obs  = await fredFetch('MYAGM2KRM189S', 14);
 
-    // Fear & Greed 별도 fetch
-    let fgScore = null;
-    try {
-      const fgRes = await fetch('https://feargreedchart.com/api/?action=all');
-      const fgData = await fgRes.json();
-      fgScore = fgData?.score?.score ?? fgData?.now?.value ?? null;
-    } catch(e) { console.warn('F&G fetch failed', e); }
+    // 3대 유동성
+    updateLiq('res', resObs, 1e6);   // WRESBAL: Millions → Trillions
+    updateLiq('tga', tgaObs, 1e6);   // WTREGEN: Millions → Trillions
+    updateLiq('rrp', rrpObs, 1e3);   // RRPONTSYD: Billions → Trillions
 
-    // ── 3대 유동성 ──
-    // WRESBAL: Millions of USD → Trillions
-    updateLiq('res', resObs, 1e6);
-    // WTREGEN: Millions of USD → Trillions
-    updateLiq('tga', tgaObs, 1e6);
-    // RRPONTSYD: Billions of USD → Trillions
-    updateLiq('rrp', rrpObs, 1e3);
-
-    // ── VIX ──
+    // VIX
     const vixVal = parseFloat(vixObs[0].value);
-    const vixPrev = parseFloat(vixObs[1].value);
-    const vixDiff = vixVal - vixPrev;
-    const vixSign = vixDiff >= 0 ? '+' : '';
-    const vixArrow = vixDiff >= 0 ? '▲' : '▼';
-    const vixC = vixColor(vixVal);
+    const vixDiff = vixVal - parseFloat(vixObs[1].value);
     document.getElementById('vix-num').textContent = vixVal.toFixed(1);
-    document.getElementById('vix-num').style.color = vixC;
+    document.getElementById('vix-num').style.color = vixColor(vixVal);
     document.getElementById('vix-chg').innerHTML =
-      `<span style="color:${vixDiff>=0?'var(--red)':'var(--green)'}">${vixArrow} ${vixSign}${vixDiff.toFixed(1)}</span> 전일 대비`;
+      `<span style="color:${vixDiff>=0?'var(--red)':'var(--green)'}">`
+      +`${vixDiff>=0?'▲':'▼'} ${vixDiff>=0?'+':''}${vixDiff.toFixed(1)}</span> 전일 대비`;
 
-    // ── DFF 기준금리 ──
+    // DFF
     const dffVal = parseFloat(dffObs[0].value);
     document.getElementById('dff-val').innerHTML = `${dffVal.toFixed(2)}<span class="info-unit">%</span>`;
     document.getElementById('dff-sub').innerHTML =
       `기준: ${fmtDate(dffObs[0].date)}<br><span style="color:var(--text3)">다음 FOMC</span><br>`
-      + `<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">2025.05.07</span>`;
+      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">2025.05.07</span>`;
 
-    // ── 한국 M2 ──
-    const m2Curr = parseFloat(m2Obs[0].value);   // billions KRW
-    const m2조 = (m2Curr / 1000).toFixed(0);       // → 조
-    const m2YoY = m2Obs.length >= 13
-      ? ((m2Curr - parseFloat(m2Obs[12].value)) / parseFloat(m2Obs[12].value) * 100).toFixed(1)
-      : null;
-    document.getElementById('m2-val').innerHTML =
-      `${Number(m2조).toLocaleString()}<span class="info-unit">조</span>`;
-    if (m2YoY !== null) {
-      const yoyColor = parseFloat(m2YoY) >= 0 ? 'var(--green)' : 'var(--red)';
-      document.getElementById('m2-yoy').innerHTML =
-        `<span style="color:${yoyColor}">${m2YoY >= 0 ? '+' : ''}${m2YoY}%</span>`;
-      // M2 bar: YoY growth를 0~10% 범위로 표시
-      const barW = Math.min(Math.max((parseFloat(m2YoY) / 10) * 100, 0), 100);
-      document.getElementById('m2-bar').style.width = barW + '%';
+    // 한국 M2
+    const m2Curr = parseFloat(m2Obs[0].value);
+    const m2조 = Math.round(m2Curr / 1000);
+    document.getElementById('m2-val').innerHTML = `${m2조.toLocaleString()}<span class="info-unit">조</span>`;
+    if (m2Obs.length >= 13) {
+      const yoy = ((m2Curr - parseFloat(m2Obs[12].value)) / parseFloat(m2Obs[12].value) * 100).toFixed(1);
+      const yoyColor = parseFloat(yoy) >= 0 ? 'var(--green)' : 'var(--red)';
+      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yoyColor}">${yoy>=0?'+':''}${yoy}%</span>`;
+      document.getElementById('m2-bar').style.width = Math.min(Math.max((parseFloat(yoy)/10)*100, 0), 100) + '%';
     }
 
-    // ── Fear & Greed ──
+    // Fear & Greed
+    const fgScore = await fetchFearGreed();
     if (fgScore !== null) {
       const score = Math.round(fgScore);
       document.getElementById('fg-num').textContent = score;
       document.getElementById('fg-tag').textContent = getFgLabel(score);
       updateGauge(score);
     } else {
-      document.getElementById('fg-num').textContent = '오류';
-      document.getElementById('fg-tag').textContent = '데이터 없음';
+      document.getElementById('fg-num').textContent = '--';
+      document.getElementById('fg-tag').textContent = 'CNN 데이터 없음';
     }
 
-    // 로딩 완료
     bar.classList.remove('active');
-
   } catch(e) {
     console.error('Load error:', e);
     bar.classList.remove('active');
     bar.style.background = 'var(--red)';
+    bar.style.height = '3px';
   }
 }
 
-// ── 시계 ──
 function tick() {
   const now = new Date();
   document.getElementById('clock').textContent =
