@@ -25,18 +25,17 @@
   --mono:   'IBM Plex Mono', monospace;
   --sans:   'IBM Plex Sans KR', sans-serif;
 }
-
-- { box-sizing: border-box; margin: 0; padding: 0; }
-  html { background: var(–bg); color-scheme: dark; }
-  body {
-  font-family: var(–sans);
-  background: var(–bg);
-  color: var(–text);
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); color-scheme: dark; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
   max-width: 420px;
   margin: 0 auto;
   min-height: 100vh;
   padding-bottom: 40px;
-  }
+}
 
 /* HEADER */
 .header {
@@ -46,30 +45,26 @@ border-bottom: 1px solid var(–border);
 padding: 16px 14px 14px;
 display: flex; justify-content: space-between; align-items: center;
 }
-.logo {
-font-family: var(–mono); font-size: 15px; font-weight: 600;
-color: var(–green); letter-spacing: 3px;
-}
+.logo { font-family: var(–mono); font-size: 15px; font-weight: 600; color: var(–green); letter-spacing: 3px; }
 .blog-chip {
 display: inline-flex; align-items: center; gap: 5px;
-background: rgba(255,255,255,0.06);
-border: 1px solid rgba(255,255,255,0.14);
-border-radius: 99px; padding: 6px 14px;
-text-decoration: none;
+background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+border-radius: 99px; padding: 6px 14px; text-decoration: none;
 }
-.blog-chip .chip-icon { font-size: 13px; }
-.blog-chip .chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
-.blog-chip .chip-arr  { font-size: 12px; color: var(–text2); }
+.chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
+.chip-arr  { font-size: 12px; color: var(–text2); }
 
-/* SECTION */
-.section { padding: 14px 12px 0; }
-.sec-header {
-display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+/* SECTION GROUP - bordered */
+.group {
+margin: 12px 12px 0;
+border: 1px solid rgba(255,255,255,0.08);
+border-radius: 14px;
+padding: 14px;
 }
+.sec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
 .sec-title {
 font-family: var(–mono); font-size: 9px; font-weight: 600;
-color: var(–text2); letter-spacing: 1.5px; text-transform: uppercase;
-white-space: nowrap;
+color: var(–text2); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
 }
 .sec-line { flex: 1; height: 1px; background: var(–border); }
 
@@ -77,13 +72,13 @@ white-space: nowrap;
 .liq-stack { display: flex; flex-direction: column; gap: 6px; }
 .liq-card {
 background: var(–card); border: 1px solid var(–border);
-border-radius: 10px; padding: 12px 12px 12px 16px;
+border-radius: 10px; padding: 12px 12px 10px 14px;
 position: relative; overflow: hidden;
 animation: fadeUp .3s ease both;
 }
-.liq-card:nth-child(1) { animation-delay: .04s; }
-.liq-card:nth-child(2) { animation-delay: .09s; }
-.liq-card:nth-child(3) { animation-delay: .14s; }
+.liq-card:nth-child(1){animation-delay:.04s}
+.liq-card:nth-child(2){animation-delay:.09s}
+.liq-card:nth-child(3){animation-delay:.14s}
 .liq-card::before {
 content: ‘’; position: absolute; left: 0; top: 8px; bottom: 8px;
 width: 2px; border-radius: 2px;
@@ -91,48 +86,39 @@ width: 2px; border-radius: 2px;
 .liq-card.c1::before { background: var(–green); }
 .liq-card.c2::before { background: var(–yellow); }
 .liq-card.c3::before { background: var(–blue); }
-
-.liq-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.liq-num { font-family: var(–mono); font-size: 10px; font-weight: 600; margin-bottom: 3px; }
+.liq-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
+.liq-num  { font-family: var(–mono); font-size: 10px; font-weight: 600; margin-bottom: 3px; }
 .liq-card.c1 .liq-num { color: var(–green); }
 .liq-card.c2 .liq-num { color: var(–yellow); }
 .liq-card.c3 .liq-num { color: var(–blue); }
 .liq-name { font-size: 13px; font-weight: 700; color: var(–text); }
 .liq-id   { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
-.liq-right { text-align: right; }
-.liq-val   { font-family: var(–mono); font-size: 16px; font-weight: 600; }
-.liq-chg   { font-family: var(–mono); font-size: 9px; margin-top: 2px; }
-.liq-date  { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
-.liq-desc  {
-font-size: 10px; color: var(–text2);
-display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
-}
-.arr-up { color: var(–green); }
-.arr-dn { color: var(–red); }
-.arr-sep{ color: var(–border); }
+.liq-right{ text-align: right; }
+.liq-val  { font-family: var(–mono); font-size: 16px; font-weight: 600; }
+.liq-chg  { font-family: var(–mono); font-size: 9px; margin-top: 2px; }
+.liq-date { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
+.liq-desc { font-size: 10px; color: var(–text2); display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+.au { color: var(–green); }
+.ad { color: var(–red); }
+.as { color: var(–border); }
 
 /* TWO COLUMN */
 .two-col { display: flex; gap: 6px; }
 .two-col > * { flex: 1; min-width: 0; overflow: hidden; }
 
-/* SENTIMENT */
+/* SENT CARD */
 .sent-card {
 background: var(–card); border: 1px solid var(–border);
 border-radius: 10px; padding: 14px 12px;
 }
-.card-title { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
+.card-title { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
 
+/* F&G */
 .fg-wrap { display: flex; flex-direction: column; align-items: center; }
-.fg-arc svg { width: 100%; height: auto; display: block; }
-.fg-score {
-font-family: var(–mono); font-size: 26px; font-weight: 600;
-text-align: center; margin-top: 4px;
-}
-.fg-label {
-font-family: var(–mono); font-size: 9px; font-weight: 600;
-text-align: center; margin-top: 2px; letter-spacing: 1px;
-}
+.fg-score { font-family: var(–mono); font-size: 26px; font-weight: 600; text-align: center; margin-top: 4px; }
+.fg-label { font-family: var(–mono); font-size: 9px; font-weight: 600; text-align: center; margin-top: 2px; letter-spacing: 1px; }
 
+/* VIX */
 .vix-score { font-family: var(–mono); font-size: 34px; font-weight: 600; line-height: 1; margin-bottom: 3px; }
 .vix-chg   { font-family: var(–mono); font-size: 9px; margin-bottom: 10px; }
 .vix-note  {
@@ -142,7 +128,7 @@ border-radius: 6px; padding: 7px 8px;
 }
 .vix-note strong { color: var(–green); font-family: var(–mono); }
 
-/* INFO */
+/* INFO CARD */
 .info-card {
 background: var(–card); border: 1px solid var(–border);
 border-radius: 10px; padding: 14px 12px;
@@ -154,28 +140,23 @@ border-radius: 10px; padding: 14px 12px;
 .bar-wrap   { margin-top: 10px; }
 .bar-bg     { background: var(–border); border-radius: 99px; height: 4px; margin-bottom: 4px; overflow: hidden; }
 .bar-fill   { height: 100%; border-radius: 99px; background: var(–purple); width: 0; transition: width 1s; }
-.bar-labels {
-display: flex; justify-content: space-between;
-font-family: var(–mono); font-size: 8px; color: var(–text3);
-}
+.bar-labels { display: flex; justify-content: space-between; font-family: var(–mono); font-size: 8px; color: var(–text3); }
 
 /* BOTTOM */
 .bottom-time {
-margin: 20px 12px 0;
-padding-top: 14px;
+margin: 16px 12px 0; padding-top: 12px;
 border-top: 1px solid var(–border);
 display: flex; justify-content: space-between; align-items: center;
 }
 .live-dot {
 display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-background: var(–green); margin-right: 5px;
-animation: blink 2s infinite;
+background: var(–green); margin-right: 5px; animation: blink 2s infinite;
 }
 .time-str { font-family: var(–mono); font-size: 11px; color: var(–text2); }
 .date-str { font-family: var(–mono); font-size: 11px; color: var(–text3); }
 
-@keyframes blink   { 0%,100%{opacity:1} 50%{opacity:.2} }
-@keyframes fadeUp  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes blink  { 0%,100%{opacity:1} 50%{opacity:.2} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 </style>
 
 </head>
@@ -184,154 +165,109 @@ animation: blink 2s infinite;
 <div class="header">
   <div class="logo">MACRO SIGNAL</div>
   <a class="blog-chip" href="https://blog.naver.com/optimal_life" target="_blank">
-    <span class="chip-icon">📝</span>
+    <span style="font-size:13px">📝</span>
     <span class="chip-text">블로그</span>
     <span class="chip-arr">↗</span>
   </a>
 </div>
 
-<div class="section">
+<div class="group">
   <div class="sec-header">
     <div class="sec-title">🇺🇸 Fed 3대 유동성</div>
     <div class="sec-line"></div>
   </div>
   <div class="liq-stack">
-
-```
-<div class="liq-card c1">
-  <div class="liq-top">
-    <div>
-      <div class="liq-num">01</div>
-      <div class="liq-name">지급준비금</div>
-      <div class="liq-id">WRESBAL · 주별</div>
+    <div class="liq-card c1">
+      <div class="liq-top">
+        <div><div class="liq-num">01</div><div class="liq-name">지급준비금</div><div class="liq-id">WRESBAL · 주별</div></div>
+        <div class="liq-right">
+          <div class="liq-val" id="res-val" style="color:var(--green)">--</div>
+          <div class="liq-chg" id="res-chg"></div>
+          <div class="liq-date" id="res-date"></div>
+        </div>
+      </div>
+      <div class="liq-desc"><span class="au">↑</span><span>증가 → 유동성 증가</span><span class="as">/</span><span class="ad">↓</span><span>감소 → 유동성 감소</span></div>
     </div>
-    <div class="liq-right">
-      <div class="liq-val" id="res-val" style="color:var(--green)">--</div>
-      <div class="liq-chg" id="res-chg"></div>
-      <div class="liq-date" id="res-date"></div>
+    <div class="liq-card c2">
+      <div class="liq-top">
+        <div><div class="liq-num">02</div><div class="liq-name">TGA (재무부 계좌)</div><div class="liq-id">WTREGEN · 주별</div></div>
+        <div class="liq-right">
+          <div class="liq-val" id="tga-val" style="color:var(--yellow)">--</div>
+          <div class="liq-chg" id="tga-chg"></div>
+          <div class="liq-date" id="tga-date"></div>
+        </div>
+      </div>
+      <div class="liq-desc"><span class="ad">↑</span><span>증가 → 유동성 감소</span><span class="as">/</span><span class="au">↓</span><span>감소 → 유동성 증가</span></div>
     </div>
-  </div>
-  <div class="liq-desc">
-    <span class="arr-up">↑</span><span>증가 → 유동성 증가</span>
-    <span class="arr-sep">/</span>
-    <span class="arr-dn">↓</span><span>감소 → 유동성 감소</span>
+    <div class="liq-card c3">
+      <div class="liq-top">
+        <div><div class="liq-num">03</div><div class="liq-name">역레포 (RRP)</div><div class="liq-id">RRPONTSYD · 일별</div></div>
+        <div class="liq-right">
+          <div class="liq-val" id="rrp-val" style="color:var(--blue)">--</div>
+          <div class="liq-chg" id="rrp-chg"></div>
+          <div class="liq-date" id="rrp-date"></div>
+        </div>
+      </div>
+      <div class="liq-desc"><span class="ad">↑</span><span>증가 → 유동성 감소</span><span class="as">/</span><span class="au">↓</span><span>감소 → 유동성 증가</span></div>
+    </div>
   </div>
 </div>
 
-<div class="liq-card c2">
-  <div class="liq-top">
-    <div>
-      <div class="liq-num">02</div>
-      <div class="liq-name">TGA (재무부 계좌)</div>
-      <div class="liq-id">WTREGEN · 주별</div>
-    </div>
-    <div class="liq-right">
-      <div class="liq-val" id="tga-val" style="color:var(--yellow)">--</div>
-      <div class="liq-chg" id="tga-chg"></div>
-      <div class="liq-date" id="tga-date"></div>
-    </div>
-  </div>
-  <div class="liq-desc">
-    <span class="arr-dn">↑</span><span>증가 → 유동성 감소</span>
-    <span class="arr-sep">/</span>
-    <span class="arr-up">↓</span><span>감소 → 유동성 증가</span>
-  </div>
-</div>
-
-<div class="liq-card c3">
-  <div class="liq-top">
-    <div>
-      <div class="liq-num">03</div>
-      <div class="liq-name">역레포 (RRP)</div>
-      <div class="liq-id">RRPONTSYD · 일별</div>
-    </div>
-    <div class="liq-right">
-      <div class="liq-val" id="rrp-val" style="color:var(--blue)">--</div>
-      <div class="liq-chg" id="rrp-chg"></div>
-      <div class="liq-date" id="rrp-date"></div>
-    </div>
-  </div>
-  <div class="liq-desc">
-    <span class="arr-dn">↑</span><span>증가 → 유동성 감소</span>
-    <span class="arr-sep">/</span>
-    <span class="arr-up">↓</span><span>감소 → 유동성 증가</span>
-  </div>
-</div>
-```
-
-  </div>
-</div>
-
-<div class="section">
+<div class="group">
   <div class="sec-header">
     <div class="sec-title">📊 시장 심리</div>
     <div class="sec-line"></div>
   </div>
   <div class="two-col">
-
-```
-<div class="sent-card">
-  <div class="card-title">Fear &amp; Greed</div>
-  <div class="fg-wrap">
-    <svg viewBox="0 0 100 56" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
-      <defs>
-        <linearGradient id="arcG" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stop-color="#ff4d6a"/>
-          <stop offset="45%"  stop-color="#ffcc00"/>
-          <stop offset="100%" stop-color="#00e5a0"/>
-        </linearGradient>
-      </defs>
-      <path d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="#1e2338" stroke-width="8" stroke-linecap="round"/>
-      <path id="arc-fill" d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="url(#arcG)"
-            stroke-width="8" stroke-linecap="round" stroke-dasharray="125" stroke-dashoffset="125"/>
-      <line id="needle" x1="50" y1="52" x2="50" y2="16"
-            stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
-      <circle cx="50" cy="52" r="4" fill="#111526" stroke="white" stroke-width="1.8"/>
-    </svg>
-    <div class="fg-score" id="fg-score">--</div>
-    <div class="fg-label" id="fg-label">로딩 중</div>
+    <div class="sent-card">
+      <div class="card-title">Fear &amp; Greed</div>
+      <div class="fg-wrap">
+        <svg viewBox="0 0 100 56" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+          <defs>
+            <linearGradient id="arcG" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#ff4d6a"/>
+              <stop offset="45%"  stop-color="#ffcc00"/>
+              <stop offset="100%" stop-color="#00e5a0"/>
+            </linearGradient>
+          </defs>
+          <path d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="#1e2338" stroke-width="8" stroke-linecap="round"/>
+          <path id="arc-fill" d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="url(#arcG)" stroke-width="8" stroke-linecap="round" stroke-dasharray="125" stroke-dashoffset="125"/>
+          <line id="needle" x1="50" y1="52" x2="50" y2="16" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+          <circle cx="50" cy="52" r="4" fill="#111526" stroke="white" stroke-width="1.8"/>
+        </svg>
+        <div class="fg-score" id="fg-score">--</div>
+        <div class="fg-label" id="fg-label">로딩 중</div>
+      </div>
+    </div>
+    <div class="sent-card">
+      <div class="card-title">VIX 지수</div>
+      <div class="vix-score" id="vix-score">--</div>
+      <div class="vix-chg" id="vix-chg"></div>
+      <div class="vix-note"><strong>40↑</strong> 투자 타이밍<br>시차 감안 40부터<br>분할매수 (메르)</div>
+    </div>
   </div>
 </div>
 
-<div class="sent-card">
-  <div class="card-title">VIX 지수</div>
-  <div class="vix-score" id="vix-score">--</div>
-  <div class="vix-chg"   id="vix-chg">--</div>
-  <div class="vix-note">
-    <strong>40↑</strong> 투자 타이밍<br>
-    시차 감안 40부터<br>분할매수 (메르)
-  </div>
-</div>
-```
-
-  </div>
-</div>
-
-<div class="section">
+<div class="group">
   <div class="sec-header">
     <div class="sec-title">💰 통화량 &amp; 금리</div>
     <div class="sec-line"></div>
   </div>
   <div class="two-col">
-
-```
-<div class="info-card">
-  <div class="info-title">한국 M2</div>
-  <div class="info-val" id="m2-val" style="color:var(--purple)">--<span class="info-unit">조</span></div>
-  <div class="bar-wrap">
-    <div class="bar-bg"><div class="bar-fill" id="m2-bar"></div></div>
-    <div class="bar-labels"><span>1년 전</span><span>현재</span></div>
-  </div>
-  <div class="info-sub">전년 동월 대비<br><span id="m2-yoy" style="color:var(--text3)">--</span></div>
-</div>
-
-<div class="info-card">
-  <div class="info-title">미국 기준금리</div>
-  <div class="info-val" id="dff-val" style="color:var(--blue)">--<span class="info-unit">%</span></div>
-  <div class="info-sub" id="dff-sub"></div>
-</div>
-```
-
+    <div class="info-card">
+      <div class="info-title">한국 M2</div>
+      <div class="info-val" id="m2-val" style="color:var(--purple)">--<span class="info-unit">조</span></div>
+      <div class="bar-wrap">
+        <div class="bar-bg"><div class="bar-fill" id="m2-bar"></div></div>
+        <div class="bar-labels"><span>1년 전</span><span>현재</span></div>
+      </div>
+      <div class="info-sub">전년 동월 대비<br><span id="m2-yoy" style="color:var(--text3)">--</span></div>
+    </div>
+    <div class="info-card">
+      <div class="info-title">미국 기준금리</div>
+      <div class="info-val" id="dff-val" style="color:var(--blue)">--<span class="info-unit">%</span></div>
+      <div class="info-sub" id="dff-sub"></div>
+    </div>
   </div>
 </div>
 
@@ -341,8 +277,8 @@ animation: blink 2s infinite;
 </div>
 
 <script>
-const FRED_KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
-const PROXY    = 'https://corsproxy.io/?';
+const KEY   = 'd1593f93a0ca45195a187f8d476c9fa5';
+const PROXY = 'https://api.allorigins.win/raw?url=';
 
 const FOMC = [
   '2026-01-28','2026-03-18','2026-04-29','2026-06-17',
@@ -351,16 +287,16 @@ const FOMC = [
   '2027-07-28','2027-09-15','2027-10-27','2027-12-08',
 ];
 
-async function fredFetch(id, limit) {
+async function fred(id, n) {
   const url = 'https://api.stlouisfed.org/fred/series/observations'
-    + '?series_id=' + id + '&api_key=' + FRED_KEY
-    + '&file_type=json&sort_order=desc&limit=' + limit;
+    + '?series_id=' + id + '&api_key=' + KEY
+    + '&file_type=json&sort_order=desc&limit=' + n;
   const r = await fetch(PROXY + encodeURIComponent(url));
   const j = await r.json();
   return j.observations.filter(o => o.value !== '.' && o.value !== '');
 }
 
-async function fgFetch() {
+async function getFG() {
   try {
     const url = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
     const r = await fetch(PROXY + encodeURIComponent(url));
@@ -369,29 +305,27 @@ async function fgFetch() {
   } catch { return null; }
 }
 
-function toT(v, div) {
-  return '$' + (parseFloat(v) / div).toFixed(2) + 'T';
+function toT(v, d)      { return '$' + (parseFloat(v)/d).toFixed(2) + 'T'; }
+function fmtDate(s)     { return s.replace(/-/g,'.'); }
+function chgHTML(c,p,d) {
+  const diff = (parseFloat(c)-parseFloat(p))/d;
+  const col  = diff>=0?'var(--green)':'var(--red)';
+  return '<span style="color:'+col+'">'+(diff>=0?'▲':'▼')+' '+(diff>=0?'+':'')+diff.toFixed(2)+'T</span>';
 }
-function chgHTML(curr, prev, div) {
-  const d = (parseFloat(curr) - parseFloat(prev)) / div;
-  const c = d >= 0 ? 'var(--green)' : 'var(--red)';
-  return `<span style="color:${c}">${d>=0?'▲':'▼'} ${d>=0?'+':''}${d.toFixed(2)}T</span>`;
-}
-function fmtD(s) { return s.replace(/-/g, '.'); }
 
 function setLiq(id, obs, div) {
   document.getElementById(id+'-val').textContent  = toT(obs[0].value, div);
   document.getElementById(id+'-chg').innerHTML    = chgHTML(obs[0].value, obs[1].value, div);
-  document.getElementById(id+'-date').textContent = fmtD(obs[0].date);
+  document.getElementById(id+'-date').textContent = fmtDate(obs[0].date);
 }
 
 function setGauge(s) {
-  const ang = (1 - s/100) * Math.PI;
-  const nx  = (50 + 34 * Math.cos(Math.PI - ang)).toFixed(1);
-  const ny  = (52 - 34 * Math.sin(Math.PI - ang)).toFixed(1);
-  document.getElementById('needle').setAttribute('x2', nx);
-  document.getElementById('needle').setAttribute('y2', ny);
-  document.getElementById('arc-fill').setAttribute('stroke-dashoffset', (125*(1-s/100)).toFixed(1));
+  const ang = (1-s/100)*Math.PI;
+  const nx  = (50+34*Math.cos(Math.PI-ang)).toFixed(1);
+  const ny  = (52-34*Math.sin(Math.PI-ang)).toFixed(1);
+  document.getElementById('needle').setAttribute('x2',nx);
+  document.getElementById('needle').setAttribute('y2',ny);
+  document.getElementById('arc-fill').setAttribute('stroke-dashoffset',(125*(1-s/100)).toFixed(1));
   const c = s<=25?'var(--red)':s<=45?'#ff9a3c':s>=75?'var(--green)':s>=55?'#7ed6a0':'var(--yellow)';
   document.getElementById('fg-score').style.color = c;
   document.getElementById('fg-label').style.color = c;
@@ -401,19 +335,13 @@ function fgLabel(s) {
   return s<=25?'😨 EXTREME FEAR':s<=45?'😟 FEAR':s<=55?'😐 NEUTRAL':s<=75?'😏 GREED':'🤑 EXTREME GREED';
 }
 
-function vixColor(v) {
-  return v>=40?'var(--red)':v>=25?'var(--yellow)':'var(--green)';
-}
+function vixColor(v) { return v>=40?'var(--red)':v>=25?'var(--yellow)':'var(--green)'; }
 
 async function load() {
   try {
-    const [res, tga, rrp, vix, dff, m2] = await Promise.all([
-      fredFetch('WRESBAL',       2),
-      fredFetch('WTREGEN',       2),
-      fredFetch('RRPONTSYD',     2),
-      fredFetch('VIXCLS',        2),
-      fredFetch('DFF',           2),
-      fredFetch('MYAGM2KRM189S', 14),
+    const [res,tga,rrp,vix,dff,m2] = await Promise.all([
+      fred('WRESBAL',2), fred('WTREGEN',2), fred('RRPONTSYD',2),
+      fred('VIXCLS',2), fred('DFF',2), fred('MYAGM2KRM189S',14),
     ]);
 
     setLiq('res', res, 1e6);
@@ -425,30 +353,35 @@ async function load() {
     document.getElementById('vix-score').textContent = vv.toFixed(1);
     document.getElementById('vix-score').style.color = vixColor(vv);
     document.getElementById('vix-chg').innerHTML =
-      `<span style="color:${vd>=0?'var(--red)':'var(--green)'}">${vd>=0?'▲':'▼'} ${vd>=0?'+':''}${vd.toFixed(1)}</span> 전일 대비`;
+      '<span style="color:'+(vd>=0?'var(--red)':'var(--green)')+'">'+
+      (vd>=0?'▲':'▼')+' '+(vd>=0?'+':'')+vd.toFixed(1)+'</span> 전일 대비';
 
     const dv   = parseFloat(dff[0].value);
     const today = new Date(); today.setHours(0,0,0,0);
     const next  = FOMC.find(d => new Date(d) >= today);
-    document.getElementById('dff-val').innerHTML = `${dv.toFixed(2)}<span class="info-unit">%</span>`;
+    document.getElementById('dff-val').innerHTML =
+      dv.toFixed(2)+'<span class="info-unit">%</span>';
     document.getElementById('dff-sub').innerHTML =
-      `기준: ${fmtD(dff[0].date)}<br>`
-      +`<span style="color:var(--text3)">다음 FOMC</span><br>`
-      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">`
-      +(next?next.replace(/-/g,'.'):'일정 확인 필요')+`</span>`;
+      '기준: '+fmtDate(dff[0].date)+'<br>'+
+      '<span style="color:var(--text3)">다음 FOMC</span><br>'+
+      '<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">'+
+      (next?next.replace(/-/g,'.'):'일정 확인 필요')+'</span>';
 
     const mv = parseFloat(m2[0].value);
-    let조 = mv; while (조 > 100000) 조 /= 1000; 조 = Math.round(조);
-    document.getElementById('m2-val').innerHTML = `${조.toLocaleString()}<span class="info-unit">조</span>`;
-    if (m2.length >= 13) {
-      const yoy = ((mv - parseFloat(m2[12].value)) / parseFloat(m2[12].value) * 100).toFixed(1);
-      const yc  = parseFloat(yoy) >= 0 ? 'var(--green)' : 'var(--red)';
-      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yc}">${parseFloat(yoy)>=0?'+':''}${yoy}%</span>`;
-      document.getElementById('m2-bar').style.width = Math.min(Math.max(parseFloat(yoy)/10*100,0),100)+'%';
+    let jo = mv; while(jo>100000) jo/=1000; jo=Math.round(jo);
+    document.getElementById('m2-val').innerHTML =
+      jo.toLocaleString()+'<span class="info-unit">조</span>';
+    if(m2.length>=13) {
+      const yoy = ((mv-parseFloat(m2[12].value))/parseFloat(m2[12].value)*100).toFixed(1);
+      const yc  = parseFloat(yoy)>=0?'var(--green)':'var(--red)';
+      document.getElementById('m2-yoy').innerHTML =
+        '<span style="color:'+yc+'">'+(parseFloat(yoy)>=0?'+':'')+yoy+'%</span>';
+      document.getElementById('m2-bar').style.width =
+        Math.min(Math.max(parseFloat(yoy)/10*100,0),100)+'%';
     }
 
-    const fg = await fgFetch();
-    if (fg !== null) {
+    const fg = await getFG();
+    if(fg!==null) {
       const s = Math.round(fg);
       document.getElementById('fg-score').textContent = s;
       document.getElementById('fg-label').textContent = fgLabel(s);
@@ -466,7 +399,7 @@ function tick() {
   document.getElementById('dateline').textContent = n.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
 
-tick(); setInterval(tick, 1000); load();
+tick(); setInterval(tick,1000); load();
 </script>
 
 </body>
