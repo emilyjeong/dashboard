@@ -10,491 +10,463 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #060810;
-  --bg2:     #0b0e18;
-  --card:    #111526;
-  --border:  #1e2338;
-  --border2: #2e3550;
-  --green:   #00e5a0;
-  --red:     #ff4d6a;
-  --yellow:  #ffcc00;
-  --blue:    #4dabf7;
-  --purple:  #c5b3ff;
-  --text:    #f0f2fa;
-  --text2:   #a0a8c0;
-  --text3:   #5a6280;
-  --mono:    'IBM Plex Mono', monospace;
-  --sans:    'IBM Plex Sans KR', sans-serif;
+  --bg:     #060810;
+  --bg2:    #0b0e18;
+  --card:   #111526;
+  --border: #1e2338;
+  --green:  #00e5a0;
+  --red:    #ff4d6a;
+  --yellow: #ffcc00;
+  --blue:   #4dabf7;
+  --purple: #c5b3ff;
+  --text:   #f0f2fa;
+  --text2:  #a0a8c0;
+  --text3:  #5a6280;
+  --mono:   'IBM Plex Mono', monospace;
+  --sans:   'IBM Plex Sans KR', sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: #060810; color-scheme: dark; min-height: 100%; }
-body {
-  font-family: var(--sans);
-  background: #060810;
-  color: var(--text);
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(–bg); color-scheme: dark; }
+  body {
+  font-family: var(–sans);
+  background: var(–bg);
+  color: var(–text);
   max-width: 420px;
   margin: 0 auto;
   min-height: 100vh;
   padding-bottom: 40px;
-  display: flex; flex-direction: column;
-}
+  }
 
-/* ── HEADER ── */
+/* HEADER */
 .header {
-padding: 16px 14px 14px;
+position: sticky; top: 0; z-index: 50;
 background: var(–bg2);
 border-bottom: 1px solid var(–border);
-position: sticky; top: 0; z-index: 50;
+padding: 16px 14px 14px;
+display: flex; justify-content: space-between; align-items: center;
 }
-.header-row { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-family: var(–mono); font-size: 15px; font-weight: 600; color: var(–green); letter-spacing: 3px; }
-.logo span { color: var(–text3); }
+.logo {
+font-family: var(–mono); font-size: 15px; font-weight: 600;
+color: var(–green); letter-spacing: 3px;
+}
 .blog-chip {
 display: inline-flex; align-items: center; gap: 5px;
-background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
-border-radius: 99px; padding: 6px 14px; text-decoration: none; transition: background .2s;
+background: rgba(255,255,255,0.06);
+border: 1px solid rgba(255,255,255,0.14);
+border-radius: 99px; padding: 6px 14px;
+text-decoration: none;
 }
-.blog-chip:active { background: rgba(255,255,255,0.12); }
-.blog-chip-icon { font-size: 13px; }
-.blog-chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
-.blog-chip-arrow { font-size: 12px; color: var(–text2); }
+.blog-chip .chip-icon { font-size: 13px; }
+.blog-chip .chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
+.blog-chip .chip-arr  { font-size: 12px; color: var(–text2); }
 
-/* ── SECTION ── */
-.section { padding: 0 12px; margin-top: 14px; }
-.sec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+/* SECTION */
+.section { padding: 14px 12px 0; }
+.sec-header {
+display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
 .sec-title {
 font-family: var(–mono); font-size: 9px; font-weight: 600;
-color: var(–text2); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
+color: var(–text2); letter-spacing: 1.5px; text-transform: uppercase;
+white-space: nowrap;
 }
 .sec-line { flex: 1; height: 1px; background: var(–border); }
 
-/* ── LIQUIDITY CARDS ── */
+/* LIQUIDITY CARDS */
 .liq-stack { display: flex; flex-direction: column; gap: 6px; }
 .liq-card {
 background: var(–card); border: 1px solid var(–border);
-border-radius: 10px; padding: 12px 14px;
-display: grid; grid-template-columns: 30px 1fr auto;
-gap: 0 10px; align-items: start;
+border-radius: 10px; padding: 12px 12px 12px 16px;
 position: relative; overflow: hidden;
 animation: fadeUp .3s ease both;
 }
 .liq-card:nth-child(1) { animation-delay: .04s; }
 .liq-card:nth-child(2) { animation-delay: .09s; }
 .liq-card:nth-child(3) { animation-delay: .14s; }
-.liq-card::after {
+.liq-card::before {
 content: ‘’; position: absolute; left: 0; top: 8px; bottom: 8px;
 width: 2px; border-radius: 2px;
 }
-.liq-card.c1::after { background: var(–green); }
-.liq-card.c2::after { background: var(–yellow); }
-.liq-card.c3::after { background: var(–blue); }
-.liq-num {
-font-family: var(–mono); font-size: 15px; font-weight: 600;
-grid-row: span 2; display: flex; align-items: center; justify-content: center;
-}
-.liq-card.c1 .liq-num { color: rgba(0,229,160,0.5); }
-.liq-card.c2 .liq-num { color: rgba(255,204,0,0.5); }
-.liq-card.c3 .liq-num { color: rgba(77,171,247,0.5); }
+.liq-card.c1::before { background: var(–green); }
+.liq-card.c2::before { background: var(–yellow); }
+.liq-card.c3::before { background: var(–blue); }
+
+.liq-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.liq-num { font-family: var(–mono); font-size: 10px; font-weight: 600; margin-bottom: 3px; }
+.liq-card.c1 .liq-num { color: var(–green); }
+.liq-card.c2 .liq-num { color: var(–yellow); }
+.liq-card.c3 .liq-num { color: var(–blue); }
 .liq-name { font-size: 13px; font-weight: 700; color: var(–text); }
 .liq-id   { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
-.liq-val-wrap { text-align: right; }
-.liq-val  { font-family: var(–mono); font-size: 15px; font-weight: 600; }
-.liq-chg  { font-family: var(–mono); font-size: 9px; margin-top: 2px; }
-.liq-date { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
-.liq-desc {
-grid-column: 2 / 4; margin-top: 8px;
-display: flex; gap: 8px; flex-wrap: wrap;
-font-size: 10px; color: var(–text2); line-height: 1.5;
+.liq-right { text-align: right; }
+.liq-val   { font-family: var(–mono); font-size: 16px; font-weight: 600; }
+.liq-chg   { font-family: var(–mono); font-size: 9px; margin-top: 2px; }
+.liq-date  { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
+.liq-desc  {
+font-size: 10px; color: var(–text2);
+display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
 }
-.liq-desc-item { display: flex; align-items: center; gap: 3px; }
-.up-arrow { color: var(–green); font-family: var(–mono); font-size: 10px; }
-.dn-arrow { color: var(–red); font-family: var(–mono); font-size: 10px; }
-.sep { color: var(–border2); font-size: 10px; }
+.arr-up { color: var(–green); }
+.arr-dn { color: var(–red); }
+.arr-sep{ color: var(–border); }
 
-/* ── SENTIMENT ── */
-.sent-row { display: flex; flex-direction: row; gap: 6px; width: 100%; }
+/* TWO COLUMN */
+.two-col { display: flex; gap: 6px; }
+.two-col > * { flex: 1; min-width: 0; overflow: hidden; }
+
+/* SENTIMENT */
 .sent-card {
-flex: 1; min-width: 0; overflow: hidden;
 background: var(–card); border: 1px solid var(–border);
 border-radius: 10px; padding: 14px 12px;
 }
-.sent-name { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
+.card-title { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
+
 .fg-wrap { display: flex; flex-direction: column; align-items: center; }
-.fg-arc { width: 100%; }
 .fg-arc svg { width: 100%; height: auto; display: block; }
-.fg-num {
-font-family: var(–mono); font-size: 24px; font-weight: 600;
-color: var(–yellow); margin-top: 4px; text-align: center;
+.fg-score {
+font-family: var(–mono); font-size: 26px; font-weight: 600;
+text-align: center; margin-top: 4px;
 }
-.fg-tag { font-family: var(–mono); font-size: 9px; font-weight: 600; color: var(–yellow); margin-top: 3px; letter-spacing: 1px; }
-.vix-num { font-family: var(–mono); font-size: 34px; font-weight: 600; color: var(–green); line-height: 1; margin-bottom: 3px; }
-.vix-sub { font-family: var(–mono); font-size: 9px; margin-bottom: 10px; }
-.vix-alert {
+.fg-label {
+font-family: var(–mono); font-size: 9px; font-weight: 600;
+text-align: center; margin-top: 2px; letter-spacing: 1px;
+}
+
+.vix-score { font-family: var(–mono); font-size: 34px; font-weight: 600; line-height: 1; margin-bottom: 3px; }
+.vix-chg   { font-family: var(–mono); font-size: 9px; margin-bottom: 10px; }
+.vix-note  {
 font-size: 10px; line-height: 1.6; color: var(–text2);
 background: rgba(0,229,160,0.07); border: 1px solid rgba(0,229,160,0.18);
 border-radius: 6px; padding: 7px 8px;
 }
-.vix-alert strong { color: var(–green); font-family: var(–mono); }
+.vix-note strong { color: var(–green); font-family: var(–mono); }
 
-/* ── INFO ROW ── */
-.info-row { display: flex; flex-direction: row; gap: 6px; width: 100%; }
-.info-card { flex: 1; min-width: 0; overflow: hidden; background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; }
-.info-name  { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
-.info-num   { font-family: var(–mono); font-size: 22px; font-weight: 600; line-height: 1; word-break: break-all; }
-.info-unit  { font-family: var(–mono); font-size: 10px; color: var(–text2); }
-.info-sub   { font-size: 10px; color: var(–text2); margin-top: 8px; line-height: 1.7; }
-.mini-bar-wrap { margin-top: 10px; }
-.mini-bar-bg   { background: var(–border); border-radius: 99px; height: 4px; margin-bottom: 4px; overflow: hidden; }
-.mini-bar-fill { height: 100%; border-radius: 99px; background: var(–purple); transition: width 1s ease; }
-.mini-bar-labels { display: flex; justify-content: space-between; font-family: var(–mono); font-size: 8px; color: var(–text3); }
+/* INFO */
+.info-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: 10px; padding: 14px 12px;
+}
+.info-title { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
+.info-val   { font-family: var(–mono); font-size: 24px; font-weight: 600; line-height: 1; }
+.info-unit  { font-family: var(–mono); font-size: 11px; color: var(–text2); }
+.info-sub   { font-size: 10px; color: var(–text2); margin-top: 8px; line-height: 1.8; }
+.bar-wrap   { margin-top: 10px; }
+.bar-bg     { background: var(–border); border-radius: 99px; height: 4px; margin-bottom: 4px; overflow: hidden; }
+.bar-fill   { height: 100%; border-radius: 99px; background: var(–purple); width: 0; transition: width 1s; }
+.bar-labels {
+display: flex; justify-content: space-between;
+font-family: var(–mono); font-size: 8px; color: var(–text3);
+}
 
-/* ── BOTTOM TIME ── */
+/* BOTTOM */
 .bottom-time {
-padding: 16px 14px 0; margin-top: 20px;
-display: flex; justify-content: space-between; align-items: center;
+margin: 20px 12px 0;
+padding-top: 14px;
 border-top: 1px solid var(–border);
+display: flex; justify-content: space-between; align-items: center;
 }
-.dot {
+.live-dot {
 display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-background: var(–green); margin-right: 5px; animation: blink 2s infinite;
+background: var(–green); margin-right: 5px;
+animation: blink 2s infinite;
 }
-.time-text { font-family: var(–mono); font-size: 11px; color: var(–text2); }
-.date-text { font-family: var(–mono); font-size: 11px; color: var(–text3); }
+.time-str { font-family: var(–mono); font-size: 11px; color: var(–text2); }
+.date-str { font-family: var(–mono); font-size: 11px; color: var(–text3); }
 
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(8px); }
-to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+@keyframes blink   { 0%,100%{opacity:1} 50%{opacity:.2} }
+@keyframes fadeUp  { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 </style>
 
 </head>
 <body>
 
 <div class="header">
-  <div class="header-row">
-    <div class="logo">MACRO<span> </span>SIGNAL</div>
-    <a class="blog-chip" href="https://blog.naver.com/optimal_life" target="_blank">
-      <span class="blog-chip-icon">📝</span>
-      <span class="blog-chip-text">블로그</span>
-      <span class="blog-chip-arrow">↗</span>
-    </a>
-  </div>
+  <div class="logo">MACRO SIGNAL</div>
+  <a class="blog-chip" href="https://blog.naver.com/optimal_life" target="_blank">
+    <span class="chip-icon">📝</span>
+    <span class="chip-text">블로그</span>
+    <span class="chip-arr">↗</span>
+  </a>
 </div>
-
-<!-- 3대 유동성 -->
 
 <div class="section">
   <div class="sec-header">
-    <div class="sec-title">🇺🇸 FED 3대 유동성</div>
+    <div class="sec-title">🇺🇸 Fed 3대 유동성</div>
     <div class="sec-line"></div>
   </div>
   <div class="liq-stack">
 
 ```
 <div class="liq-card c1">
-  <div class="liq-num">01</div>
-  <div>
-    <div class="liq-name">지급준비금</div>
-    <div class="liq-id">WRESBAL · 주별</div>
-  </div>
-  <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--green)" id="res-val">--</div>
-    <div class="liq-chg" id="res-chg"></div>
-    <div class="liq-date" id="res-date"></div>
+  <div class="liq-top">
+    <div>
+      <div class="liq-num">01</div>
+      <div class="liq-name">지급준비금</div>
+      <div class="liq-id">WRESBAL · 주별</div>
+    </div>
+    <div class="liq-right">
+      <div class="liq-val" id="res-val" style="color:var(--green)">--</div>
+      <div class="liq-chg" id="res-chg"></div>
+      <div class="liq-date" id="res-date"></div>
+    </div>
   </div>
   <div class="liq-desc">
-    <div class="liq-desc-item"><span class="up-arrow">↑</span><span>증가 → 유동성 증가</span></div>
-    <span class="sep">/</span>
-    <div class="liq-desc-item"><span class="dn-arrow">↓</span><span>감소 → 유동성 감소</span></div>
+    <span class="arr-up">↑</span><span>증가 → 유동성 증가</span>
+    <span class="arr-sep">/</span>
+    <span class="arr-dn">↓</span><span>감소 → 유동성 감소</span>
   </div>
 </div>
 
 <div class="liq-card c2">
-  <div class="liq-num">02</div>
-  <div>
-    <div class="liq-name">TGA (재무부 계좌)</div>
-    <div class="liq-id">WTREGEN · 주별</div>
-  </div>
-  <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--yellow)" id="tga-val">--</div>
-    <div class="liq-chg" id="tga-chg"></div>
-    <div class="liq-date" id="tga-date"></div>
+  <div class="liq-top">
+    <div>
+      <div class="liq-num">02</div>
+      <div class="liq-name">TGA (재무부 계좌)</div>
+      <div class="liq-id">WTREGEN · 주별</div>
+    </div>
+    <div class="liq-right">
+      <div class="liq-val" id="tga-val" style="color:var(--yellow)">--</div>
+      <div class="liq-chg" id="tga-chg"></div>
+      <div class="liq-date" id="tga-date"></div>
+    </div>
   </div>
   <div class="liq-desc">
-    <div class="liq-desc-item"><span class="dn-arrow">↑</span><span>증가 → 유동성 감소</span></div>
-    <span class="sep">/</span>
-    <div class="liq-desc-item"><span class="up-arrow">↓</span><span>감소 → 유동성 증가</span></div>
+    <span class="arr-dn">↑</span><span>증가 → 유동성 감소</span>
+    <span class="arr-sep">/</span>
+    <span class="arr-up">↓</span><span>감소 → 유동성 증가</span>
   </div>
 </div>
 
 <div class="liq-card c3">
-  <div class="liq-num">03</div>
-  <div>
-    <div class="liq-name">역레포 (RRP)</div>
-    <div class="liq-id">RRPONTSYD · 일별</div>
-  </div>
-  <div class="liq-val-wrap">
-    <div class="liq-val" style="color:var(--blue)" id="rrp-val">--</div>
-    <div class="liq-chg" id="rrp-chg"></div>
-    <div class="liq-date" id="rrp-date"></div>
+  <div class="liq-top">
+    <div>
+      <div class="liq-num">03</div>
+      <div class="liq-name">역레포 (RRP)</div>
+      <div class="liq-id">RRPONTSYD · 일별</div>
+    </div>
+    <div class="liq-right">
+      <div class="liq-val" id="rrp-val" style="color:var(--blue)">--</div>
+      <div class="liq-chg" id="rrp-chg"></div>
+      <div class="liq-date" id="rrp-date"></div>
+    </div>
   </div>
   <div class="liq-desc">
-    <div class="liq-desc-item"><span class="dn-arrow">↑</span><span>증가 → 유동성 감소</span></div>
-    <span class="sep">/</span>
-    <div class="liq-desc-item"><span class="up-arrow">↓</span><span>감소 → 유동성 증가</span></div>
+    <span class="arr-dn">↑</span><span>증가 → 유동성 감소</span>
+    <span class="arr-sep">/</span>
+    <span class="arr-up">↓</span><span>감소 → 유동성 증가</span>
   </div>
 </div>
 ```
 
   </div>
 </div>
-
-<!-- 시장 심리 -->
 
 <div class="section">
   <div class="sec-header">
     <div class="sec-title">📊 시장 심리</div>
     <div class="sec-line"></div>
   </div>
-  <div class="sent-row">
+  <div class="two-col">
 
 ```
 <div class="sent-card">
-  <div class="sent-name">Fear & Greed</div>
+  <div class="card-title">Fear &amp; Greed</div>
   <div class="fg-wrap">
-    <div class="fg-arc">
-      <svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stop-color="#ff4d6a"/>
-            <stop offset="45%"  stop-color="#ffcc00"/>
-            <stop offset="100%" stop-color="#00e5a0"/>
-          </linearGradient>
-        </defs>
-        <path d="M8,46 A37,37 0 0,1 82,46" fill="none" stroke="#1e2338" stroke-width="7" stroke-linecap="round"/>
-        <path id="fg-arc-fill" d="M8,46 A37,37 0 0,1 82,46" fill="none" stroke="url(#ag)" stroke-width="7" stroke-linecap="round"
-              stroke-dasharray="116" stroke-dashoffset="116"/>
-        <line id="fg-needle" x1="45" y1="46" x2="45" y2="12" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
-        <circle cx="45" cy="46" r="3.5" fill="#111526" stroke="white" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="fg-num" id="fg-num">--</div>
-    <div class="fg-tag" id="fg-tag">로딩 중...</div>
+    <svg viewBox="0 0 100 56" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+      <defs>
+        <linearGradient id="arcG" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="#ff4d6a"/>
+          <stop offset="45%"  stop-color="#ffcc00"/>
+          <stop offset="100%" stop-color="#00e5a0"/>
+        </linearGradient>
+      </defs>
+      <path d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="#1e2338" stroke-width="8" stroke-linecap="round"/>
+      <path id="arc-fill" d="M10,52 A40,40 0 0,1 90,52" fill="none" stroke="url(#arcG)"
+            stroke-width="8" stroke-linecap="round" stroke-dasharray="125" stroke-dashoffset="125"/>
+      <line id="needle" x1="50" y1="52" x2="50" y2="16"
+            stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+      <circle cx="50" cy="52" r="4" fill="#111526" stroke="white" stroke-width="1.8"/>
+    </svg>
+    <div class="fg-score" id="fg-score">--</div>
+    <div class="fg-label" id="fg-label">로딩 중</div>
   </div>
 </div>
 
 <div class="sent-card">
-  <div class="sent-name">VIX 지수</div>
-  <div class="vix-num" id="vix-num">--</div>
-  <div class="vix-sub" id="vix-chg" style="color:var(--text3)">로딩 중...</div>
-  <div class="vix-alert">
-    <strong>40↑</strong> 투자 타이밍<br>시차 감안 40부터<br>분할매수 (메르)
+  <div class="card-title">VIX 지수</div>
+  <div class="vix-score" id="vix-score">--</div>
+  <div class="vix-chg"   id="vix-chg">--</div>
+  <div class="vix-note">
+    <strong>40↑</strong> 투자 타이밍<br>
+    시차 감안 40부터<br>분할매수 (메르)
   </div>
 </div>
 ```
 
   </div>
 </div>
-
-<!-- 통화량 & 금리 -->
 
 <div class="section">
   <div class="sec-header">
-    <div class="sec-title">💰 통화량 & 금리</div>
+    <div class="sec-title">💰 통화량 &amp; 금리</div>
     <div class="sec-line"></div>
   </div>
-  <div class="info-row">
+  <div class="two-col">
 
 ```
 <div class="info-card">
-  <div class="info-name">한국 M2</div>
-  <div class="info-num" style="color:var(--purple)" id="m2-val">--<span class="info-unit">조</span></div>
-  <div class="mini-bar-wrap">
-    <div class="mini-bar-bg"><div class="mini-bar-fill" id="m2-bar" style="width:0%"></div></div>
-    <div class="mini-bar-labels"><span>1년 전</span><span>현재</span></div>
+  <div class="info-title">한국 M2</div>
+  <div class="info-val" id="m2-val" style="color:var(--purple)">--<span class="info-unit">조</span></div>
+  <div class="bar-wrap">
+    <div class="bar-bg"><div class="bar-fill" id="m2-bar"></div></div>
+    <div class="bar-labels"><span>1년 전</span><span>현재</span></div>
   </div>
   <div class="info-sub">전년 동월 대비<br><span id="m2-yoy" style="color:var(--text3)">--</span></div>
 </div>
 
 <div class="info-card">
-  <div class="info-name">미국 기준금리</div>
-  <div class="info-num" style="color:var(--blue)" id="dff-val">--<span class="info-unit">%</span></div>
-  <div class="info-sub" style="margin-top:12px" id="dff-sub">
-    <span style="color:var(--text3)">로딩 중...</span>
-  </div>
+  <div class="info-title">미국 기준금리</div>
+  <div class="info-val" id="dff-val" style="color:var(--blue)">--<span class="info-unit">%</span></div>
+  <div class="info-sub" id="dff-sub"></div>
 </div>
 ```
 
   </div>
 </div>
 
-<!-- 하단 시간 -->
-
 <div class="bottom-time">
-  <div class="time-text"><span class="dot"></span><span id="clock">--:--:--</span></div>
-  <div class="date-text" id="dateline">----.--.--</div>
+  <div class="time-str"><span class="live-dot"></span><span id="clock">--:--:--</span></div>
+  <div class="date-str" id="dateline">----.--.--</div>
 </div>
 
 <script>
 const FRED_KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
-const PROXY = 'https://corsproxy.io/?';
+const PROXY    = 'https://corsproxy.io/?';
 
-// ── FRED fetch (CORS 프록시) ──
-async function fredFetch(seriesId, limit = 14) {
-  const target = 'https://api.stlouisfed.org/fred/series/observations'
-    + '?series_id=' + seriesId + '&api_key=' + FRED_KEY
+const FOMC = [
+  '2026-01-28','2026-03-18','2026-04-29','2026-06-17',
+  '2026-07-29','2026-09-16','2026-10-28','2026-12-09',
+  '2027-01-27','2027-03-17','2027-04-28','2027-06-09',
+  '2027-07-28','2027-09-15','2027-10-27','2027-12-08',
+];
+
+async function fredFetch(id, limit) {
+  const url = 'https://api.stlouisfed.org/fred/series/observations'
+    + '?series_id=' + id + '&api_key=' + FRED_KEY
     + '&file_type=json&sort_order=desc&limit=' + limit;
-  const res = await fetch(PROXY + encodeURIComponent(target));
-  if (!res.ok) throw new Error('FRED ' + seriesId + ' ' + res.status);
-  const json = await res.json();
-  return json.observations.filter(o => o.value !== '.' && o.value !== '');
+  const r = await fetch(PROXY + encodeURIComponent(url));
+  const j = await r.json();
+  return j.observations.filter(o => o.value !== '.' && o.value !== '');
 }
 
-// ── Fear & Greed (CORS 프록시) ──
-async function fetchFearGreed() {
+async function fgFetch() {
   try {
-    const target = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
-    const res = await fetch(PROXY + encodeURIComponent(target));
-    const d = await res.json();
-    return d?.fear_and_greed?.score ?? null;
-  } catch(e) { return null; }
+    const url = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const r = await fetch(PROXY + encodeURIComponent(url));
+    const j = await r.json();
+    return j?.fear_and_greed?.score ?? null;
+  } catch { return null; }
 }
 
-// ── 포맷 ──
-function fmtT(val, divisor) {
-  return '$' + (parseFloat(val) / divisor).toFixed(2) + 'T';
+function toT(v, div) {
+  return '$' + (parseFloat(v) / div).toFixed(2) + 'T';
 }
-function fmtChg(curr, prev, divisor) {
-  const d = (parseFloat(curr) - parseFloat(prev)) / divisor;
-  const sign = d >= 0 ? '+' : '';
-  const color = d >= 0 ? 'var(--green)' : 'var(--red)';
-  const arrow = d >= 0 ? '▲' : '▼';
-  return `<span style="color:${color}">${arrow} ${sign}${d.toFixed(2)}T</span>`;
+function chgHTML(curr, prev, div) {
+  const d = (parseFloat(curr) - parseFloat(prev)) / div;
+  const c = d >= 0 ? 'var(--green)' : 'var(--red)';
+  return `<span style="color:${c}">${d>=0?'▲':'▼'} ${d>=0?'+':''}${d.toFixed(2)}T</span>`;
 }
-function fmtDate(s) { return s.replace(/-/g, '.'); }
+function fmtD(s) { return s.replace(/-/g, '.'); }
 
-function updateLiq(id, obs, divisor) {
-  document.getElementById(id+'-val').textContent = fmtT(obs[0].value, divisor);
-  document.getElementById(id+'-chg').innerHTML = fmtChg(obs[0].value, obs[1].value, divisor);
-  document.getElementById(id+'-date').textContent = fmtDate(obs[0].date);
+function setLiq(id, obs, div) {
+  document.getElementById(id+'-val').textContent  = toT(obs[0].value, div);
+  document.getElementById(id+'-chg').innerHTML    = chgHTML(obs[0].value, obs[1].value, div);
+  document.getElementById(id+'-date').textContent = fmtD(obs[0].date);
 }
 
-function updateGauge(score) {
-  const angleDeg = 180 - (score / 100) * 180;
-  const angleRad = angleDeg * Math.PI / 180;
-  const nx = 45 + 30 * Math.cos(angleRad);
-  const ny = 46 - 30 * Math.sin(angleRad);
-  document.getElementById('fg-needle').setAttribute('x2', nx.toFixed(1));
-  document.getElementById('fg-needle').setAttribute('y2', ny.toFixed(1));
-  document.getElementById('fg-arc-fill').setAttribute('stroke-dashoffset', (116*(1-score/100)).toFixed(1));
-  let color = score<=25?'var(--red)':score<=45?'#ff9a3c':score>=75?'var(--green)':score>=55?'#7ed6a0':'var(--yellow)';
-  document.getElementById('fg-num').style.color = color;
-  document.getElementById('fg-tag').style.color = color;
+function setGauge(s) {
+  const ang = (1 - s/100) * Math.PI;
+  const nx  = (50 + 34 * Math.cos(Math.PI - ang)).toFixed(1);
+  const ny  = (52 - 34 * Math.sin(Math.PI - ang)).toFixed(1);
+  document.getElementById('needle').setAttribute('x2', nx);
+  document.getElementById('needle').setAttribute('y2', ny);
+  document.getElementById('arc-fill').setAttribute('stroke-dashoffset', (125*(1-s/100)).toFixed(1));
+  const c = s<=25?'var(--red)':s<=45?'#ff9a3c':s>=75?'var(--green)':s>=55?'#7ed6a0':'var(--yellow)';
+  document.getElementById('fg-score').style.color = c;
+  document.getElementById('fg-label').style.color = c;
 }
 
-function getFgLabel(s) {
-  if (s<=25) return '😨 EXTREME FEAR';
-  if (s<=45) return '😟 FEAR';
-  if (s<=55) return '😐 NEUTRAL';
-  if (s<=75) return '😏 GREED';
-  return '🤑 EXTREME GREED';
+function fgLabel(s) {
+  return s<=25?'😨 EXTREME FEAR':s<=45?'😟 FEAR':s<=55?'😐 NEUTRAL':s<=75?'😏 GREED':'🤑 EXTREME GREED';
 }
 
 function vixColor(v) {
   return v>=40?'var(--red)':v>=25?'var(--yellow)':'var(--green)';
 }
 
-// ── 메인 로드 ──
-async function loadAll() {
-
+async function load() {
   try {
-    // FRED는 순차적으로 (JSONP 동시 다발 방지)
-    const resObs = await fredFetch('WRESBAL', 2);
-    const tgaObs = await fredFetch('WTREGEN', 2);
-    const rrpObs = await fredFetch('RRPONTSYD', 2);
-    const vixObs = await fredFetch('VIXCLS', 2);
-    const dffObs = await fredFetch('DFF', 2);
-    const m2Obs  = await fredFetch('MYAGM2KRM189S', 14);
+    const [res, tga, rrp, vix, dff, m2] = await Promise.all([
+      fredFetch('WRESBAL',       2),
+      fredFetch('WTREGEN',       2),
+      fredFetch('RRPONTSYD',     2),
+      fredFetch('VIXCLS',        2),
+      fredFetch('DFF',           2),
+      fredFetch('MYAGM2KRM189S', 14),
+    ]);
 
-    // 3대 유동성
-    updateLiq('res', resObs, 1e6);   // WRESBAL: Millions → Trillions
-    updateLiq('tga', tgaObs, 1e6);   // WTREGEN: Millions → Trillions
-    updateLiq('rrp', rrpObs, 1e3);   // RRPONTSYD: Billions → Trillions
+    setLiq('res', res, 1e6);
+    setLiq('tga', tga, 1e6);
+    setLiq('rrp', rrp, 1e3);
 
-    // VIX
-    const vixVal = parseFloat(vixObs[0].value);
-    const vixDiff = vixVal - parseFloat(vixObs[1].value);
-    document.getElementById('vix-num').textContent = vixVal.toFixed(1);
-    document.getElementById('vix-num').style.color = vixColor(vixVal);
+    const vv = parseFloat(vix[0].value);
+    const vd = vv - parseFloat(vix[1].value);
+    document.getElementById('vix-score').textContent = vv.toFixed(1);
+    document.getElementById('vix-score').style.color = vixColor(vv);
     document.getElementById('vix-chg').innerHTML =
-      `<span style="color:${vixDiff>=0?'var(--red)':'var(--green)'}">`
-      +`${vixDiff>=0?'▲':'▼'} ${vixDiff>=0?'+':''}${vixDiff.toFixed(1)}</span> 전일 대비`;
+      `<span style="color:${vd>=0?'var(--red)':'var(--green)'}">${vd>=0?'▲':'▼'} ${vd>=0?'+':''}${vd.toFixed(1)}</span> 전일 대비`;
 
-    // DFF
-    const dffVal = parseFloat(dffObs[0].value);
-    document.getElementById('dff-val').innerHTML = `${dffVal.toFixed(2)}<span class="info-unit">%</span>`;
-    // FOMC 날짜 배열 (2026-2027 공식 확정)
-    const FOMC_DATES = [
-      '2026-01-28','2026-03-18','2026-04-29','2026-06-17',
-      '2026-07-29','2026-09-16','2026-10-28','2026-12-09',
-      '2027-01-27','2027-03-17','2027-04-28','2027-06-09',
-      '2027-07-28','2027-09-15','2027-10-27','2027-12-08',
-    ];
+    const dv   = parseFloat(dff[0].value);
     const today = new Date(); today.setHours(0,0,0,0);
-    const nextFomc = FOMC_DATES.find(d => new Date(d) >= today);
-    const nextFomcStr = nextFomc ? nextFomc.replace(/-/g,'.') : '일정 확인 필요';
+    const next  = FOMC.find(d => new Date(d) >= today);
+    document.getElementById('dff-val').innerHTML = `${dv.toFixed(2)}<span class="info-unit">%</span>`;
     document.getElementById('dff-sub').innerHTML =
-      `기준: ${fmtDate(dffObs[0].date)}<br><span style="color:var(--text3)">다음 FOMC</span><br>`
-      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">${nextFomcStr}</span>`;
+      `기준: ${fmtD(dff[0].date)}<br>`
+      +`<span style="color:var(--text3)">다음 FOMC</span><br>`
+      +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">`
+      +(next?next.replace(/-/g,'.'):'일정 확인 필요')+`</span>`;
 
-    // 한국 M2 (FRED: billions of KRW → 조 변환)
-    const m2Curr = parseFloat(m2Obs[0].value);
-    // 자동 스케일: 어떤 단위로 오든 조(trillion) 단위로 정규화
-    let m2조Val = m2Curr;
-    while (m2조Val > 100000) m2조Val /= 1000;
-    const m2조 = Math.round(m2조Val);
-    document.getElementById('m2-val').innerHTML = `${m2조.toLocaleString()}<span class="info-unit">조</span>`;
-    if (m2Obs.length >= 13) {
-      const m2Prev = parseFloat(m2Obs[12].value);
-      const yoy = ((m2Curr - m2Prev) / m2Prev * 100).toFixed(1);
-      const yoyColor = parseFloat(yoy) >= 0 ? 'var(--green)' : 'var(--red)';
-      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yoyColor}">${parseFloat(yoy)>=0?'+':''}${yoy}%</span>`;
-      document.getElementById('m2-bar').style.width = Math.min(Math.max((parseFloat(yoy)/10)*100, 0), 100) + '%';
+    const mv = parseFloat(m2[0].value);
+    let조 = mv; while (조 > 100000) 조 /= 1000; 조 = Math.round(조);
+    document.getElementById('m2-val').innerHTML = `${조.toLocaleString()}<span class="info-unit">조</span>`;
+    if (m2.length >= 13) {
+      const yoy = ((mv - parseFloat(m2[12].value)) / parseFloat(m2[12].value) * 100).toFixed(1);
+      const yc  = parseFloat(yoy) >= 0 ? 'var(--green)' : 'var(--red)';
+      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yc}">${parseFloat(yoy)>=0?'+':''}${yoy}%</span>`;
+      document.getElementById('m2-bar').style.width = Math.min(Math.max(parseFloat(yoy)/10*100,0),100)+'%';
     }
 
-    // Fear & Greed
-    const fgScore = await fetchFearGreed();
-    if (fgScore !== null) {
-      const score = Math.round(fgScore);
-      document.getElementById('fg-num').textContent = score;
-      document.getElementById('fg-tag').textContent = getFgLabel(score);
-      updateGauge(score);
+    const fg = await fgFetch();
+    if (fg !== null) {
+      const s = Math.round(fg);
+      document.getElementById('fg-score').textContent = s;
+      document.getElementById('fg-label').textContent = fgLabel(s);
+      setGauge(s);
     } else {
-      document.getElementById('fg-num').textContent = '--';
-      document.getElementById('fg-tag').textContent = 'CNN 데이터 없음';
+      document.getElementById('fg-score').textContent = '--';
+      document.getElementById('fg-label').textContent = 'CNN 연결 실패';
     }
-
-
-  } catch(e) {
-    console.error('Load error:', e);
-
-    bar.style.background = 'var(--red)';
-    bar.style.height = '3px';
-  }
+  } catch(e) { console.error(e); }
 }
 
 function tick() {
-  const now = new Date();
-  document.getElementById('clock').textContent =
-    now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-  document.getElementById('dateline').textContent =
-    now.toLocaleDateString('ko-KR', {year:'numeric', month:'2-digit', day:'2-digit'});
+  const n = new Date();
+  document.getElementById('clock').textContent    = n.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('dateline').textContent = n.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
 
-tick();
-setInterval(tick, 1000);
-loadAll();
+tick(); setInterval(tick, 1000); load();
 </script>
 
 </body>
