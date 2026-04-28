@@ -132,14 +132,16 @@ font-size: 10px; color: var(–text2); line-height: 1.5;
 .sep { color: var(–border2); font-size: 10px; }
 
 /* ── SENTIMENT ── */
-.sent-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sent-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
 .sent-card {
 background: var(–card); border: 1px solid var(–border);
 border-radius: 10px; padding: 14px 12px;
+min-width: 0; overflow: hidden;
 }
 .sent-name { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
 .fg-wrap { display: flex; flex-direction: column; align-items: center; }
-.fg-arc svg { width: 100%; height: auto; }
+.fg-arc { width: 100%; }
+.fg-arc svg { width: 100%; height: auto; display: block; }
 .fg-num {
 font-family: var(–mono); font-size: 24px; font-weight: 600;
 color: var(–yellow); margin-top: 4px; text-align: center;
@@ -155,10 +157,10 @@ border-radius: 6px; padding: 7px 8px;
 .vix-alert strong { color: var(–green); font-family: var(–mono); }
 
 /* ── INFO ROW ── */
-.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.info-card { background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; }
+.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+.info-card { background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; min-width: 0; overflow: hidden; }
 .info-name  { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
-.info-num   { font-family: var(–mono); font-size: 26px; font-weight: 600; line-height: 1; }
+.info-num   { font-family: var(–mono); font-size: 22px; font-weight: 600; line-height: 1; word-break: break-all; }
 .info-unit  { font-family: var(–mono); font-size: 10px; color: var(–text2); }
 .info-sub   { font-size: 10px; color: var(–text2); margin-top: 8px; line-height: 1.7; }
 .mini-bar-wrap { margin-top: 10px; }
@@ -466,14 +468,18 @@ async function loadAll() {
       `기준: ${fmtDate(dffObs[0].date)}<br><span style="color:var(--text3)">다음 FOMC</span><br>`
       +`<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">2025.05.07</span>`;
 
-    // 한국 M2
+    // 한국 M2 (FRED: billions of KRW → 조 변환)
     const m2Curr = parseFloat(m2Obs[0].value);
-    const m2조 = Math.round(m2Curr / 1000);
+    // 자동 스케일: 어떤 단위로 오든 조(trillion) 단위로 정규화
+    let m2조Val = m2Curr;
+    while (m2조Val > 100000) m2조Val /= 1000;
+    const m2조 = Math.round(m2조Val);
     document.getElementById('m2-val').innerHTML = `${m2조.toLocaleString()}<span class="info-unit">조</span>`;
     if (m2Obs.length >= 13) {
-      const yoy = ((m2Curr - parseFloat(m2Obs[12].value)) / parseFloat(m2Obs[12].value) * 100).toFixed(1);
+      const m2Prev = parseFloat(m2Obs[12].value);
+      const yoy = ((m2Curr - m2Prev) / m2Prev * 100).toFixed(1);
       const yoyColor = parseFloat(yoy) >= 0 ? 'var(--green)' : 'var(--red)';
-      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yoyColor}">${yoy>=0?'+':''}${yoy}%</span>`;
+      document.getElementById('m2-yoy').innerHTML = `<span style="color:${yoyColor}">${parseFloat(yoy)>=0?'+':''}${yoy}%</span>`;
       document.getElementById('m2-bar').style.width = Math.min(Math.max((parseFloat(yoy)/10)*100, 0), 100) + '%';
     }
 
