@@ -8,17 +8,24 @@
 <style>
 body {
   background:#060810;
-  color:white;
+  color:#fff;
   font-family:sans-serif;
   max-width:420px;
   margin:0 auto;
 }
-.section { margin:20px 10px; }
 .card {
   background:#111526;
-  padding:12px;
+  padding:14px;
   border-radius:10px;
-  margin-bottom:10px;
+  margin:10px;
+}
+.title {
+  font-size:13px;
+  color:#aaa;
+}
+.value {
+  font-size:20px;
+  margin-top:6px;
 }
 </style>
 </head>
@@ -27,38 +34,66 @@ body {
 
 <h2 style="padding:10px">MACRO SIGNAL</h2>
 
-<div class="section">
-  <div class="card">지급준비금: <span id="res">로딩중...</span></div>
-  <div class="card">TGA: <span id="tga">로딩중...</span></div>
-  <div class="card">RRP: <span id="rrp">로딩중...</span></div>
+<div class="card">
+  <div class="title">지급준비금</div>
+  <div class="value" id="res">로딩중...</div>
 </div>
 
-<div class="section">
-  <div class="card">VIX: <span id="vix">로딩중...</span></div>
-  <div class="card">금리: <span id="rate">로딩중...</span></div>
+<div class="card">
+  <div class="title">TGA</div>
+  <div class="value" id="tga">로딩중...</div>
+</div>
+
+<div class="card">
+  <div class="title">RRP</div>
+  <div class="value" id="rrp">로딩중...</div>
+</div>
+
+<div class="card">
+  <div class="title">VIX</div>
+  <div class="value" id="vix">로딩중...</div>
+</div>
+
+<div class="card">
+  <div class="title">금리</div>
+  <div class="value" id="rate">로딩중...</div>
 </div>
 
 <script>
 const KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
 
-/* ── CORS 대응 fetch ── */
+/* ── 안전 fetch (CORS 대응) ── */
 async function safeFetch(url){
-  try{
-    const r = await fetch(url);
-    if(!r.ok) throw new Error();
-    return await r.json();
-  }catch(e){
-    const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
-    const r = await fetch(proxy);
-    return await r.json();
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
+    return await res.json();
+  } catch (e) {
+    try {
+      const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+      const res = await fetch(proxy);
+      return await res.json();
+    } catch {
+      return null;
+    }
   }
 }
 
-/* ── FRED ── */
+/* ── FRED 가져오기 ── */
 async function get(series){
-  const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${KEY}&file_type=json&sort_order=desc&limit=2`;
-  const j = await safeFetch(url);
-  return j.observations?.filter(o=>o.value!=".") || null;
+  const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${KEY}&file_type=json&limit=10`;
+
+  const json = await safeFetch(url);
+  if (!json || !json.observations) return null;
+
+  return json.observations
+    .filter(o => o.value !== '.' && o.value !== '')
+    .sort((a,b)=> new Date(b.date) - new Date(a.date)); // 최신순
+}
+
+/* ── 값 표시 ── */
+function setText(id, text){
+  document.getElementById(id).textContent = text;
 }
 
 /* ── 실행 ── */
@@ -67,37 +102,37 @@ async function run(){
   // 지급준비금
   try{
     const d = await get('WRESBAL');
-    document.getElementById('res').textContent =
-      d ? (d[0].value/1e6).toFixed(2)+'T' : 'N/A';
-  }catch{ document.getElementById('res').textContent='에러'; }
+    if (!d || !d[0]) return setText('res','N/A');
+    setText('res', (parseFloat(d[0].value)/1e6).toFixed(2)+'T');
+  }catch{ setText('res','ERR'); }
 
   // TGA
   try{
     const d = await get('WTREGEN');
-    document.getElementById('tga').textContent =
-      d ? (d[0].value/1e6).toFixed(2)+'T' : 'N/A';
-  }catch{ document.getElementById('tga').textContent='에러'; }
+    if (!d || !d[0]) return setText('tga','N/A');
+    setText('tga', (parseFloat(d[0].value)/1e6).toFixed(2)+'T');
+  }catch{ setText('tga','ERR'); }
 
   // RRP
   try{
     const d = await get('RRPONTSYD');
-    document.getElementById('rrp').textContent =
-      d ? (d[0].value/1e3).toFixed(2)+'T' : 'N/A';
-  }catch{ document.getElementById('rrp').textContent='에러'; }
+    if (!d || !d[0]) return setText('rrp','N/A');
+    setText('rrp', (parseFloat(d[0].value)/1e3).toFixed(2)+'T');
+  }catch{ setText('rrp','ERR'); }
 
   // VIX
   try{
     const d = await get('VIXCLS');
-    document.getElementById('vix').textContent =
-      d ? parseFloat(d[0].value).toFixed(1) : 'N/A';
-  }catch{ document.getElementById('vix').textContent='에러'; }
+    if (!d || !d[0]) return setText('vix','N/A');
+    setText('vix', parseFloat(d[0].value).toFixed(1));
+  }catch{ setText('vix','ERR'); }
 
   // 금리
   try{
     const d = await get('DFF');
-    document.getElementById('rate').textContent =
-      d ? parseFloat(d[0].value).toFixed(2)+'%' : 'N/A';
-  }catch{ document.getElementById('rate').textContent='에러'; }
+    if (!d || !d[0]) return setText('rate','N/A');
+    setText('rate', parseFloat(d[0].value).toFixed(2)+'%');
+  }catch{ setText('rate','ERR'); }
 
 }
 
