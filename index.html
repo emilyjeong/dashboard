@@ -1,1 +1,549 @@
-d
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#060810">
+<meta name="color-scheme" content="dark">
+<title>MACRO SIGNAL</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #060810;
+  --bg2:     #0b0e18;
+  --card:    #111526;
+  --border:  #1e2338;
+  --border2: #2e3550;
+  --green:   #00e5a0;
+  --red:     #ff4d6a;
+  --yellow:  #ffcc00;
+  --blue:    #4dabf7;
+  --purple:  #c5b3ff;
+  --text:    #f0f2fa;
+  --text2:   #a0a8c0;
+  --text3:   #5a6280;
+  --mono:    'IBM Plex Mono', monospace;
+  --sans:    'IBM Plex Sans KR', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #060810; color-scheme: dark; min-height: 100%; }
+body {
+  font-family: var(--sans);
+  background: #060810;
+  color: var(--text);
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 40px;
+  display: flex; flex-direction: column;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
+  pointer-events: none; z-index: 100;
+}
+
+/* ── HEADER ── */
+.header {
+padding: 16px 14px 14px;
+background: var(–bg2);
+border-bottom: 1px solid var(–border);
+position: sticky; top: 0; z-index: 50;
+}
+.header-row { display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: var(–mono); font-size: 15px; font-weight: 600; color: var(–green); letter-spacing: 3px; }
+.logo span { color: var(–text3); }
+.blog-chip {
+display: inline-flex; align-items: center; gap: 5px;
+background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+border-radius: 99px; padding: 6px 14px; text-decoration: none; transition: background .2s;
+}
+.blog-chip:active { background: rgba(255,255,255,0.12); }
+.blog-chip-icon { font-size: 13px; }
+.blog-chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
+.blog-chip-arrow { font-size: 12px; color: var(–text2); }
+
+/* ── LOADING OVERLAY ── */
+.loading-bar {
+height: 2px; background: var(–border);
+position: relative; overflow: hidden;
+}
+.loading-bar.active::after {
+content: ‘’;
+position: absolute; top: 0; left: -100%;
+width: 60%; height: 100%;
+background: linear-gradient(90deg, transparent, var(–green), transparent);
+animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer { to { left: 200%; } }
+
+/* ── SECTION ── */
+.section { padding: 0 12px; margin-top: 14px; }
+.sec-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.sec-title {
+font-family: var(–mono); font-size: 9px; font-weight: 600;
+color: var(–text2); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap;
+}
+.sec-line { flex: 1; height: 1px; background: var(–border); }
+
+/* ── LIQUIDITY CARDS ── */
+.liq-stack { display: flex; flex-direction: column; gap: 6px; }
+.liq-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: 10px; padding: 12px 14px;
+display: grid; grid-template-columns: 30px 1fr auto;
+gap: 0 10px; align-items: start;
+position: relative; overflow: hidden;
+animation: fadeUp .3s ease both;
+}
+.liq-card:nth-child(1) { animation-delay: .04s; }
+.liq-card:nth-child(2) { animation-delay: .09s; }
+.liq-card:nth-child(3) { animation-delay: .14s; }
+.liq-card::after {
+content: ‘’; position: absolute; left: 0; top: 8px; bottom: 8px;
+width: 2px; border-radius: 2px;
+}
+.liq-card.c1::after { background: var(–green); }
+.liq-card.c2::after { background: var(–yellow); }
+.liq-card.c3::after { background: var(–blue); }
+.liq-num {
+font-family: var(–mono); font-size: 15px; font-weight: 600;
+grid-row: span 2; display: flex; align-items: center; justify-content: center;
+}
+.liq-card.c1 .liq-num { color: rgba(0,229,160,0.5); }
+.liq-card.c2 .liq-num { color: rgba(255,204,0,0.5); }
+.liq-card.c3 .liq-num { color: rgba(77,171,247,0.5); }
+.liq-name { font-size: 13px; font-weight: 700; color: var(–text); }
+.liq-id   { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
+.liq-val-wrap { text-align: right; }
+.liq-val  { font-family: var(–mono); font-size: 15px; font-weight: 600; }
+.liq-chg  { font-family: var(–mono); font-size: 9px; margin-top: 2px; }
+.liq-date { font-family: var(–mono); font-size: 8px; color: var(–text3); margin-top: 2px; }
+.liq-desc {
+grid-column: 2 / 4; margin-top: 8px;
+display: flex; gap: 8px; flex-wrap: wrap;
+font-size: 10px; color: var(–text2); line-height: 1.5;
+}
+.liq-desc-item { display: flex; align-items: center; gap: 3px; }
+.up-arrow { color: var(–green); font-family: var(–mono); font-size: 10px; }
+.dn-arrow { color: var(–red); font-family: var(–mono); font-size: 10px; }
+.sep { color: var(–border2); font-size: 10px; }
+
+/* ── SENTIMENT ── */
+.sent-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sent-card {
+background: var(–card); border: 1px solid var(–border);
+border-radius: 10px; padding: 14px 12px;
+}
+.sent-name { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 12px; }
+.fg-wrap { display: flex; flex-direction: column; align-items: center; }
+.fg-arc svg { width: 100%; height: auto; }
+.fg-num {
+font-family: var(–mono); font-size: 24px; font-weight: 600;
+color: var(–yellow); margin-top: 4px; text-align: center;
+}
+.fg-tag { font-family: var(–mono); font-size: 9px; font-weight: 600; color: var(–yellow); margin-top: 3px; letter-spacing: 1px; }
+.vix-num { font-family: var(–mono); font-size: 34px; font-weight: 600; color: var(–green); line-height: 1; margin-bottom: 3px; }
+.vix-sub { font-family: var(–mono); font-size: 9px; margin-bottom: 10px; }
+.vix-alert {
+font-size: 10px; line-height: 1.6; color: var(–text2);
+background: rgba(0,229,160,0.07); border: 1px solid rgba(0,229,160,0.18);
+border-radius: 6px; padding: 7px 8px;
+}
+.vix-alert strong { color: var(–green); font-family: var(–mono); }
+
+/* ── INFO ROW ── */
+.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.info-card { background: var(–card); border: 1px solid var(–border); border-radius: 10px; padding: 14px 12px; }
+.info-name  { font-size: 12px; font-weight: 700; color: var(–text); margin-bottom: 10px; }
+.info-num   { font-family: var(–mono); font-size: 26px; font-weight: 600; line-height: 1; }
+.info-unit  { font-family: var(–mono); font-size: 10px; color: var(–text2); }
+.info-sub   { font-size: 10px; color: var(–text2); margin-top: 8px; line-height: 1.7; }
+.mini-bar-wrap { margin-top: 10px; }
+.mini-bar-bg   { background: var(–border); border-radius: 99px; height: 4px; margin-bottom: 4px; overflow: hidden; }
+.mini-bar-fill { height: 100%; border-radius: 99px; background: var(–purple); transition: width 1s ease; }
+.mini-bar-labels { display: flex; justify-content: space-between; font-family: var(–mono); font-size: 8px; color: var(–text3); }
+
+/* ── BOTTOM TIME ── */
+.bottom-time {
+padding: 16px 14px 0; margin-top: 20px;
+display: flex; justify-content: space-between; align-items: center;
+border-top: 1px solid var(–border);
+}
+.dot {
+display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+background: var(–green); margin-right: 5px; animation: blink 2s infinite;
+}
+.time-text { font-family: var(–mono); font-size: 11px; color: var(–text2); }
+.date-text { font-family: var(–mono); font-size: 11px; color: var(–text3); }
+
+/* ── SKELETON ── */
+.skel {
+background: linear-gradient(90deg, var(–border) 25%, var(–border2) 50%, var(–border) 75%);
+background-size: 200% 100%;
+animation: skelShimmer 1.5s infinite;
+border-radius: 4px; display: inline-block;
+}
+@keyframes skelShimmer { to { background-position: -200% 0; } }
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(8px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">MACRO<span> </span>SIGNAL</div>
+    <a class="blog-chip" href="https://blog.naver.com/optimal_life" target="_blank">
+      <span class="blog-chip-icon">📝</span>
+      <span class="blog-chip-text">블로그</span>
+      <span class="blog-chip-arrow">↗</span>
+    </a>
+  </div>
+</div>
+<div class="loading-bar active" id="loadingBar"></div>
+
+<!-- 3대 유동성 -->
+
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">🇺🇸 FED 3대 유동성</div>
+    <div class="sec-line"></div>
+  </div>
+  <div class="liq-stack">
+
+```
+<div class="liq-card c1">
+  <div class="liq-num">01</div>
+  <div>
+    <div class="liq-name">지급준비금</div>
+    <div class="liq-id">WRESBAL · 주별</div>
+  </div>
+  <div class="liq-val-wrap">
+    <div class="liq-val" style="color:var(--green)" id="res-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-chg" id="res-chg"></div>
+    <div class="liq-date" id="res-date"></div>
+  </div>
+  <div class="liq-desc">
+    <div class="liq-desc-item"><span class="up-arrow">↑</span><span>증가 → 유동성 증가</span></div>
+    <span class="sep">/</span>
+    <div class="liq-desc-item"><span class="dn-arrow">↓</span><span>감소 → 유동성 감소</span></div>
+  </div>
+</div>
+
+<div class="liq-card c2">
+  <div class="liq-num">02</div>
+  <div>
+    <div class="liq-name">TGA (재무부 계좌)</div>
+    <div class="liq-id">WTREGEN · 주별</div>
+  </div>
+  <div class="liq-val-wrap">
+    <div class="liq-val" style="color:var(--yellow)" id="tga-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-chg" id="tga-chg"></div>
+    <div class="liq-date" id="tga-date"></div>
+  </div>
+  <div class="liq-desc">
+    <div class="liq-desc-item"><span class="dn-arrow">↑</span><span>증가 → 유동성 감소</span></div>
+    <span class="sep">/</span>
+    <div class="liq-desc-item"><span class="up-arrow">↓</span><span>감소 → 유동성 증가</span></div>
+  </div>
+</div>
+
+<div class="liq-card c3">
+  <div class="liq-num">03</div>
+  <div>
+    <div class="liq-name">역레포 (RRP)</div>
+    <div class="liq-id">RRPONTSYD · 일별</div>
+  </div>
+  <div class="liq-val-wrap">
+    <div class="liq-val" style="color:var(--blue)" id="rrp-val"><span class="skel" style="width:60px;height:18px"></span></div>
+    <div class="liq-chg" id="rrp-chg"></div>
+    <div class="liq-date" id="rrp-date"></div>
+  </div>
+  <div class="liq-desc">
+    <div class="liq-desc-item"><span class="dn-arrow">↑</span><span>증가 → 유동성 감소</span></div>
+    <span class="sep">/</span>
+    <div class="liq-desc-item"><span class="up-arrow">↓</span><span>감소 → 유동성 증가</span></div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- 시장 심리 -->
+
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">📊 시장 심리</div>
+    <div class="sec-line"></div>
+  </div>
+  <div class="sent-row">
+
+```
+<div class="sent-card">
+  <div class="sent-name">Fear & Greed</div>
+  <div class="fg-wrap">
+    <div class="fg-arc">
+      <svg viewBox="0 0 90 50" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#ff4d6a"/>
+            <stop offset="45%"  stop-color="#ffcc00"/>
+            <stop offset="100%" stop-color="#00e5a0"/>
+          </linearGradient>
+        </defs>
+        <path d="M8,46 A37,37 0 0,1 82,46" fill="none" stroke="#1e2338" stroke-width="7" stroke-linecap="round"/>
+        <path id="fg-arc-fill" d="M8,46 A37,37 0 0,1 82,46" fill="none" stroke="url(#ag)" stroke-width="7" stroke-linecap="round"
+              stroke-dasharray="116" stroke-dashoffset="116"/>
+        <line id="fg-needle" x1="45" y1="46" x2="45" y2="12" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+        <circle cx="45" cy="46" r="3.5" fill="#111526" stroke="white" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="fg-num" id="fg-num">--</div>
+    <div class="fg-tag" id="fg-tag">로딩 중...</div>
+  </div>
+</div>
+
+<div class="sent-card">
+  <div class="sent-name">VIX 지수</div>
+  <div class="vix-num" id="vix-num">--</div>
+  <div class="vix-sub" id="vix-chg" style="color:var(--text3)">로딩 중...</div>
+  <div class="vix-alert">
+    <strong>40↑</strong> 투자 타이밍<br>시차 감안 40부터<br>분할매수 (메르)
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- 통화량 & 금리 -->
+
+<div class="section">
+  <div class="sec-header">
+    <div class="sec-title">💰 통화량 & 금리</div>
+    <div class="sec-line"></div>
+  </div>
+  <div class="info-row">
+
+```
+<div class="info-card">
+  <div class="info-name">한국 M2</div>
+  <div class="info-num" style="color:var(--purple)" id="m2-val">--<span class="info-unit">조</span></div>
+  <div class="mini-bar-wrap">
+    <div class="mini-bar-bg"><div class="mini-bar-fill" id="m2-bar" style="width:0%"></div></div>
+    <div class="mini-bar-labels"><span>1년 전</span><span>현재</span></div>
+  </div>
+  <div class="info-sub">전년 동월 대비<br><span id="m2-yoy" style="color:var(--text3)">--</span></div>
+</div>
+
+<div class="info-card">
+  <div class="info-name">미국 기준금리</div>
+  <div class="info-num" style="color:var(--blue)" id="dff-val">--<span class="info-unit">%</span></div>
+  <div class="info-sub" style="margin-top:12px" id="dff-sub">
+    <span style="color:var(--text3)">로딩 중...</span>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- 하단 시간 -->
+
+<div class="bottom-time">
+  <div class="time-text"><span class="dot"></span><span id="clock">--:--:--</span></div>
+  <div class="date-text" id="dateline">----.--.--</div>
+</div>
+
+<script>
+const FRED_KEY = 'd1593f93a0ca45195a187f8d476c9fa5';
+
+// ── FRED fetch ──
+async function fredFetch(seriesId, limit = 14) {
+  const url = `https://api.stlouisfed.org/fred/series/observations`
+    + `?series_id=${seriesId}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=${limit}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`FRED ${seriesId} ${res.status}`);
+  const json = await res.json();
+  return json.observations.filter(o => o.value !== '.' && o.value !== '');
+}
+
+// ── 값 포맷 ──
+function fmtT(val, divisor) {
+  const t = parseFloat(val) / divisor;
+  return '$' + t.toFixed(2) + 'T';
+}
+function fmtChg(curr, prev, divisor) {
+  const c = parseFloat(curr) / divisor;
+  const p = parseFloat(prev) / divisor;
+  const d = c - p;
+  const sign = d >= 0 ? '+' : '';
+  const color = d >= 0 ? 'var(--green)' : 'var(--red)';
+  const arrow = d >= 0 ? '▲' : '▼';
+  return { html: `<span style="color:${color}">${arrow} ${sign}${d.toFixed(2)}T</span>`, isUp: d >= 0 };
+}
+function fmtDate(dateStr) {
+  return dateStr.replace(/-/g, '.');
+}
+
+// ── 유동성 카드 업데이트 ──
+function updateLiq(id, obs, divisor) {
+  const curr = obs[0], prev = obs[1];
+  document.getElementById(`${id}-val`).textContent = fmtT(curr.value, divisor);
+  const chg = fmtChg(curr.value, prev.value, divisor);
+  document.getElementById(`${id}-chg`).innerHTML = chg.html;
+  document.getElementById(`${id}-date`).textContent = fmtDate(curr.date);
+}
+
+// ── Fear & Greed 게이지 ──
+function updateGauge(score) {
+  // needle angle: score 0 = left(180°), score 100 = right(0°)
+  const angleDeg = 180 - (score / 100) * 180;
+  const angleRad = angleDeg * Math.PI / 180;
+  const r = 30;
+  const cx = 45, cy = 46;
+  const nx = cx + r * Math.cos(angleRad);
+  const ny = cy - r * Math.sin(angleRad);
+  document.getElementById('fg-needle').setAttribute('x2', nx.toFixed(1));
+  document.getElementById('fg-needle').setAttribute('y2', ny.toFixed(1));
+
+  // arc fill
+  const offset = 116 * (1 - score / 100);
+  document.getElementById('fg-arc-fill').setAttribute('stroke-dashoffset', offset.toFixed(1));
+
+  // color by zone
+  let color = 'var(--yellow)';
+  if (score <= 25) color = 'var(--red)';
+  else if (score <= 45) color = '#ff9a3c';
+  else if (score >= 75) color = 'var(--green)';
+  else if (score >= 55) color = '#7ed6a0';
+  document.getElementById('fg-num').style.color = color;
+  document.getElementById('fg-tag').style.color = color;
+}
+
+function getFgLabel(score) {
+  if (score <= 25) return '😨 EXTREME FEAR';
+  if (score <= 45) return '😟 FEAR';
+  if (score <= 55) return '😐 NEUTRAL';
+  if (score <= 75) return '😏 GREED';
+  return '🤑 EXTREME GREED';
+}
+
+// ── VIX 색상 ──
+function vixColor(v) {
+  if (v >= 40) return 'var(--red)';
+  if (v >= 25) return 'var(--yellow)';
+  return 'var(--green)';
+}
+
+// ── 메인 로드 ──
+async function loadAll() {
+  const bar = document.getElementById('loadingBar');
+  try {
+    const [resObs, tgaObs, rrpObs, m2Obs, vixObs, dffObs] = await Promise.all([
+      fredFetch('WRESBAL', 2),
+      fredFetch('WTREGEN', 2),
+      fredFetch('RRPONTSYD', 2),
+      fredFetch('MYAGM2KRM189S', 14),   // 14개로 YoY 계산
+      fredFetch('VIXCLS', 2),
+      fredFetch('DFF', 2),
+    ]);
+
+    // Fear & Greed 별도 fetch
+    let fgScore = null;
+    try {
+      const fgRes = await fetch('https://feargreedchart.com/api/?action=all');
+      const fgData = await fgRes.json();
+      fgScore = fgData?.score?.score ?? fgData?.now?.value ?? null;
+    } catch(e) { console.warn('F&G fetch failed', e); }
+
+    // ── 3대 유동성 ──
+    // WRESBAL: Millions of USD → Trillions
+    updateLiq('res', resObs, 1e6);
+    // WTREGEN: Millions of USD → Trillions
+    updateLiq('tga', tgaObs, 1e6);
+    // RRPONTSYD: Billions of USD → Trillions
+    updateLiq('rrp', rrpObs, 1e3);
+
+    // ── VIX ──
+    const vixVal = parseFloat(vixObs[0].value);
+    const vixPrev = parseFloat(vixObs[1].value);
+    const vixDiff = vixVal - vixPrev;
+    const vixSign = vixDiff >= 0 ? '+' : '';
+    const vixArrow = vixDiff >= 0 ? '▲' : '▼';
+    const vixC = vixColor(vixVal);
+    document.getElementById('vix-num').textContent = vixVal.toFixed(1);
+    document.getElementById('vix-num').style.color = vixC;
+    document.getElementById('vix-chg').innerHTML =
+      `<span style="color:${vixDiff>=0?'var(--red)':'var(--green)'}">${vixArrow} ${vixSign}${vixDiff.toFixed(1)}</span> 전일 대비`;
+
+    // ── DFF 기준금리 ──
+    const dffVal = parseFloat(dffObs[0].value);
+    document.getElementById('dff-val').innerHTML = `${dffVal.toFixed(2)}<span class="info-unit">%</span>`;
+    document.getElementById('dff-sub').innerHTML =
+      `기준: ${fmtDate(dffObs[0].date)}<br><span style="color:var(--text3)">다음 FOMC</span><br>`
+      + `<span style="color:var(--yellow);font-family:var(--mono);font-size:10px">2025.05.07</span>`;
+
+    // ── 한국 M2 ──
+    const m2Curr = parseFloat(m2Obs[0].value);   // billions KRW
+    const m2조 = (m2Curr / 1000).toFixed(0);       // → 조
+    const m2YoY = m2Obs.length >= 13
+      ? ((m2Curr - parseFloat(m2Obs[12].value)) / parseFloat(m2Obs[12].value) * 100).toFixed(1)
+      : null;
+    document.getElementById('m2-val').innerHTML =
+      `${Number(m2조).toLocaleString()}<span class="info-unit">조</span>`;
+    if (m2YoY !== null) {
+      const yoyColor = parseFloat(m2YoY) >= 0 ? 'var(--green)' : 'var(--red)';
+      document.getElementById('m2-yoy').innerHTML =
+        `<span style="color:${yoyColor}">${m2YoY >= 0 ? '+' : ''}${m2YoY}%</span>`;
+      // M2 bar: YoY growth를 0~10% 범위로 표시
+      const barW = Math.min(Math.max((parseFloat(m2YoY) / 10) * 100, 0), 100);
+      document.getElementById('m2-bar').style.width = barW + '%';
+    }
+
+    // ── Fear & Greed ──
+    if (fgScore !== null) {
+      const score = Math.round(fgScore);
+      document.getElementById('fg-num').textContent = score;
+      document.getElementById('fg-tag').textContent = getFgLabel(score);
+      updateGauge(score);
+    } else {
+      document.getElementById('fg-num').textContent = '오류';
+      document.getElementById('fg-tag').textContent = '데이터 없음';
+    }
+
+    // 로딩 완료
+    bar.classList.remove('active');
+
+  } catch(e) {
+    console.error('Load error:', e);
+    bar.classList.remove('active');
+    bar.style.background = 'var(--red)';
+  }
+}
+
+// ── 시계 ──
+function tick() {
+  const now = new Date();
+  document.getElementById('clock').textContent =
+    now.toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  document.getElementById('dateline').textContent =
+    now.toLocaleDateString('ko-KR', {year:'numeric', month:'2-digit', day:'2-digit'});
+}
+
+tick();
+setInterval(tick, 1000);
+loadAll();
+</script>
+
+</body>
+</html>
