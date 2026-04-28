@@ -38,12 +38,6 @@ body {
   padding-bottom: 40px;
   display: flex; flex-direction: column;
 }
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.025) 2px, rgba(0,0,0,0.025) 4px);
-  pointer-events: none; z-index: 100;
-}
 
 /* ── HEADER ── */
 .header {
@@ -64,20 +58,6 @@ border-radius: 99px; padding: 6px 14px; text-decoration: none; transition: backg
 .blog-chip-icon { font-size: 13px; }
 .blog-chip-text { font-size: 13px; font-weight: 600; color: var(–text); }
 .blog-chip-arrow { font-size: 12px; color: var(–text2); }
-
-/* ── LOADING OVERLAY ── */
-.loading-bar {
-height: 2px; background: var(–border);
-position: relative; overflow: hidden;
-}
-.loading-bar.active::after {
-content: ‘’;
-position: absolute; top: 0; left: -100%;
-width: 60%; height: 100%;
-background: linear-gradient(90deg, transparent, var(–green), transparent);
-animation: shimmer 1.2s infinite;
-}
-@keyframes shimmer { to { left: 200%; } }
 
 /* ── SECTION ── */
 .section { padding: 0 12px; margin-top: 14px; }
@@ -181,15 +161,6 @@ background: var(–green); margin-right: 5px; animation: blink 2s infinite;
 .time-text { font-family: var(–mono); font-size: 11px; color: var(–text2); }
 .date-text { font-family: var(–mono); font-size: 11px; color: var(–text3); }
 
-/* ── SKELETON ── */
-.skel {
-background: linear-gradient(90deg, var(–border) 25%, var(–border2) 50%, var(–border) 75%);
-background-size: 200% 100%;
-animation: skelShimmer 1.5s infinite;
-border-radius: 4px; display: inline-block;
-}
-@keyframes skelShimmer { to { background-position: -200% 0; } }
-
 @keyframes fadeUp {
 from { opacity: 0; transform: translateY(8px); }
 to   { opacity: 1; transform: translateY(0); }
@@ -210,7 +181,6 @@ to   { opacity: 1; transform: translateY(0); }
     </a>
   </div>
 </div>
-<div class="loading-bar" id="loadingBar"></div>
 
 <!-- 3대 유동성 -->
 
@@ -437,7 +407,7 @@ function vixColor(v) {
 
 // ── 메인 로드 ──
 async function loadAll() {
-  const bar = document.getElementById('loadingBar');
+
   try {
     // FRED는 순차적으로 (JSONP 동시 다발 방지)
     const resObs = await fredFetch('WRESBAL', 2);
@@ -505,10 +475,10 @@ async function loadAll() {
       document.getElementById('fg-tag').textContent = 'CNN 데이터 없음';
     }
 
-    bar.classList.remove('active');
+
   } catch(e) {
     console.error('Load error:', e);
-    bar.classList.remove('active');
+
     bar.style.background = 'var(--red)';
     bar.style.height = '3px';
   }
