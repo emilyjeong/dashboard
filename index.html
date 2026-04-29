@@ -12,8 +12,8 @@
 :root {
   --bg:     #060810;
   --bg2:    #0b0e18;
-  --card:   #111526;
-  --border: #1e2338;
+  --card:   #1a1f35;
+  --border: #2a3050;
   --green:  #00e5a0;
   --red:    #ff4d6a;
   --yellow: #ffcc00;
@@ -57,7 +57,7 @@ border-radius: 99px; padding: 6px 14px; text-decoration: none;
 /* SECTION GROUP - bordered */
 .group {
 margin: 12px 12px 0;
-border: 1px solid rgba(255,255,255,0.08);
+border: 1px solid rgba(255,255,255,0.15);
 border-radius: 14px;
 padding: 14px;
 }
@@ -101,6 +101,8 @@ width: 2px; border-radius: 2px;
 .au { color: var(–green); }
 .ad { color: var(–red); }
 .as { color: var(–border); }
+.au-word { color: var(–green); font-weight: 700; }
+.ad-word { color: var(–red); font-weight: 700; }
 
 /* TWO COLUMN */
 .two-col { display: flex; gap: 6px; }
@@ -186,7 +188,7 @@ background: var(–green); margin-right: 5px; animation: blink 2s infinite;
           <div class="liq-date" id="res-date"></div>
         </div>
       </div>
-      <div class="liq-desc"><span class="au">↑ 증가 → 유동성 증가</span><span class="as">/</span><span class="ad">↓ 감소 → 유동성 감소</span></div>
+      <div class="liq-desc"><span class="au">잔고 ↑ <span class="au-word">증가</span></span><span>→ 유동성 증가</span><span class="as">/</span><span class="ad">잔고 ↓ <span class="ad-word">감소</span></span><span>→ 유동성 감소</span></div>
     </div>
     <div class="liq-card c2">
       <div class="liq-top">
@@ -197,7 +199,7 @@ background: var(–green); margin-right: 5px; animation: blink 2s infinite;
           <div class="liq-date" id="tga-date"></div>
         </div>
       </div>
-      <div class="liq-desc"><span class="ad">↑ 증가 → 유동성 감소</span><span class="as">/</span><span class="au">↓ 감소 → 유동성 증가</span></div>
+      <div class="liq-desc"><span class="ad">잔고 ↑ <span class="ad-word">증가</span></span><span>→ 유동성 감소</span><span class="as">/</span><span class="au">잔고 ↓ <span class="au-word">감소</span></span><span>→ 유동성 증가</span></div>
     </div>
     <div class="liq-card c3">
       <div class="liq-top">
@@ -208,7 +210,7 @@ background: var(–green); margin-right: 5px; animation: blink 2s infinite;
           <div class="liq-date" id="rrp-date"></div>
         </div>
       </div>
-      <div class="liq-desc"><span class="ad">↑ 증가 → 유동성 감소</span><span class="as">/</span><span class="au">↓ 감소 → 유동성 증가</span></div>
+      <div class="liq-desc"><span class="ad">잔고 ↑ <span class="ad-word">증가</span></span><span>→ 유동성 감소</span><span class="as">/</span><span class="au">잔고 ↓ <span class="au-word">감소</span></span><span>→ 유동성 증가</span></div>
     </div>
   </div>
 </div>
