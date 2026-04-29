@@ -415,11 +415,11 @@ async function load() {
       '<span style="color:#ffcc00;font-family:\'IBM Plex Mono\',monospace;font-size:10px">' +
       (next ? next.replace(/-/g,'.') : '일정 확인 필요') + '</span>';
 
-    var mv = parseFloat(m2[0].value);
+    var mv = Number(m2[0].value.replace(/,/g, ''));
     var jo = Math.round(mv / 1000);
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
     if (m2.length >= 13) {
-      var prev = parseFloat(m2[12].value);
+      var prev = Number(m2[12].value.replace(/,/g, ''));
       var yoy  = ((mv - prev) / prev * 100).toFixed(1);
       var yc   = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
       document.getElementById('m2-yoy').innerHTML =
