@@ -341,10 +341,11 @@ async function fred(id, n) {
 
 async function getFG() {
   try {
-    const r = await fetch('https://api.alternative.me/fng/');
+    const url = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
+    const r = await fetch(PROXY + encodeURIComponent(url));
     const j = await r.json();
-    return parseFloat(j.data[0].value);
-  } catch(e) { return null; }
+    return j?.fear_and_greed?.score ?? null;
+  } catch { return null; }
 }
 
 function toT(v, d)  { return '$' + (parseFloat(v)/d).toFixed(2) + 'T'; }
