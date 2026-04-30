@@ -11,7 +11,7 @@
 :root {
   --bg:     #08090f;
   --bg2:    #0d1020;
-  --card:   #111526;
+  --card:   #1e3060;
   --border: #4a5590;
   --green:  #00e5a0;
   --red:    #ff4d6a;
@@ -321,6 +321,7 @@ body {
 
 <script>
 const KEY   = 'd1593f93a0ca45195a187f8d476c9fa5';
+const ECOS_KEY = 'ERVMMPDVK98I2E6IZ8GZ';
 const PROXY = 'https://corsproxy.io/?';
 
 const FOMC = [
@@ -341,11 +342,10 @@ async function fred(id, n) {
 
 async function getFG() {
   try {
-    const url = 'https://production.dataviz.cnn.io/index/fearandgreed/graphdata';
-    const r = await fetch(PROXY + encodeURIComponent(url));
+    const r = await fetch('https://api.alternative.me/fng/');
     const j = await r.json();
-    return j?.fear_and_greed?.score ?? null;
-  } catch { return null; }
+    return parseFloat(j.data[0].value);
+  } catch(e) { return null; }
 }
 
 function toT(v, d)  { return '$' + (parseFloat(v)/d).toFixed(2) + 'T'; }
@@ -390,8 +390,17 @@ async function load() {
     var tga = await fred('WTREGEN',       2);
     var rrp = await fred('RRPONTSYD',     2);
     var vix = await fred('VIXCLS',        2);
-    var dff = await fred('DFEDTARU',           2);
-    var m2  = await fred('MYAGM2KRM189S', 14);
+    var dff = await fred('DFF',           2);
+    // 한국은행 ECOS M2 (101Y004, 십억원)
+    var now   = new Date();
+    var eDateE = now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2);
+    var past   = new Date(now); past.setMonth(past.getMonth()-13);
+    var eDateS = past.getFullYear() + ('0'+(past.getMonth()+1)).slice(-2);
+    var ecosUrl = 'https://ecos.bok.or.kr/api/StatisticSearch/' + ECOS_KEY
+      + '/json/kr/1/14/101Y004/MM/' + eDateS + '/' + eDateE + '/BBLA';
+    var ecosR = await fetch(PROXY + encodeURIComponent(ecosUrl));
+    var ecosJ = await ecosR.json();
+    var m2rows = ecosJ.StatisticSearch.row;
 
     setLiq('res', res, 1e6);
     setLiq('tga', tga, 1e6);
@@ -415,13 +424,15 @@ async function load() {
       '<span style="color:#ffcc00;font-family:\'IBM Plex Mono\',monospace;font-size:10px">' +
       (next ? next.replace(/-/g,'.') : '일정 확인 필요') + '</span>';
 
-    var mv = parseFloat(m2[0].value);
-    var jo = Math.round(mv / 1000);
+    // ECOS: rows 최신순 정렬
+    m2rows.sort(function(a,b){ return b.TIME.localeCompare(a.TIME); });
+    var mv  = parseFloat(m2rows[0].DATA_VALUE);   // 십억원
+    var jo  = Math.round(mv / 1000);              // 조원
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
-    if (m2.length >= 13) {
-      var prev = parseFloat(m2[12].value);
-      var yoy  = ((mv - prev) / prev * 100).toFixed(1);
-      var yc   = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
+    if (m2rows.length >= 13) {
+      var mprev = parseFloat(m2rows[12].DATA_VALUE);
+      var yoy   = ((mv - mprev) / mprev * 100).toFixed(1);
+      var yc    = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
       document.getElementById('m2-yoy').innerHTML =
         '<span style="color:' + yc + '">' + (parseFloat(yoy)>=0?'+':'') + yoy + '%</span>';
       document.getElementById('m2-bar').style.width =
