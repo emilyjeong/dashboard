@@ -321,6 +321,7 @@ body {
 
 <script>
 const KEY   = 'd1593f93a0ca45195a187f8d476c9fa5';
+const ECOS_KEY = 'ERVMMPDVK98I2E6IZ8GZ';
 const PROXY = 'https://corsproxy.io/?';
 
 const FOMC = [
@@ -391,7 +392,11 @@ async function load() {
     var rrp = await fred('RRPONTSYD',     2);
     var vix = await fred('VIXCLS',        2);
     var dff = await fred('DFEDTARU',           2);
-    var m2  = await fred('MYAGM2KRM189S', 14);
+    var ecosR = await fetch(PROXY + encodeURIComponent('https://ecos.bok.or.kr/api/KeyStatisticList/ERVMMPDVK98I2E6IZ8GZ/json/kr/1/100'));
+      var ecosJ = await ecosR.json();
+      var m2rows = ecosJ.KeyStatisticList.row;
+      var m2Item = m2rows.find(function(r){ return r.KEYSTAT_NAME.indexOf('M2') !== -1 && r.KEYSTAT_NAME.indexOf('광의') !== -1; });
+    //var m2  = await fred('MYAGM2KRM189S', 14);//
 
     setLiq('res', res, 1e6);
     setLiq('tga', tga, 1e6);
@@ -415,8 +420,10 @@ async function load() {
       '<span style="color:#ffcc00;font-family:\'IBM Plex Mono\',monospace;font-size:10px">' +
       (next ? next.replace(/-/g,'.') : '일정 확인 필요') + '</span>';
 
-    var mv = parseFloat(m2[0].value);
-    var jo = Math.round(mv / 1000);
+    //var mv = parseFloat(m2[0].value);//
+    //var jo = Math.round(mv / 1000);//
+    var mv = parseFloat(m2Item.DATA_VALUE); // 십억원
+    var jo = Math.round(mv / 1000);        // 조원
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
     if (m2.length >= 13) {
       var prev = parseFloat(m2[12].value);
