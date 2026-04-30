@@ -361,7 +361,12 @@ async function ecosFetch() {
     var rows  = j.StatisticSearch.row;
     rows.sort(function(a,b){ return b.TIME.localeCompare(a.TIME); });
     return rows;
-  } catch(e) { return null; }
+  } catch(e) {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div style="position:fixed;bottom:40px;left:0;right:0;background:#ff9a3c;color:#fff;font-size:11px;padding:8px;z-index:999">' + e.message + '</div>'
+    );
+    return null;
+  }
 }
 
 async function getFG() {
@@ -370,7 +375,12 @@ async function getFG() {
     const r = await fetch(PROXY + encodeURIComponent(url));
     const j = await r.json();
     return j?.fear_and_greed?.score ?? null;
-  } catch { return null; }
+  } catch(e) {
+    document.body.insertAdjacentHTML('beforeend',
+      '<div style="position:fixed;bottom:40px;left:0;right:0;background:#ff9a3c;color:#fff;font-size:11px;padding:8px;z-index:999">' + e.message + '</div>'
+    );
+    return null;
+  }
 }
 
 function toT(v, d)  { return '$' + (parseFloat(v)/d).toFixed(2) + 'T'; }
@@ -464,7 +474,12 @@ async function load() {
       document.getElementById('fg-label').textContent = '로딩 실패';
     }
 
-  } catch(e) { console.error(e); }
+  } catch(e) {
+    console.error(e);
+    document.body.insertAdjacentHTML('beforeend',
+      '<div style="position:fixed;bottom:0;left:0;right:0;background:#ff4d6a;color:#fff;font-size:11px;padding:8px;z-index:999">' + e.message + '</div>'
+    );
+  }
 }
 
 function tick() {
