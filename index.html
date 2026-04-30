@@ -358,7 +358,8 @@ async function ecosFetch() {
     var url   = 'https://ecos.bok.or.kr/api/StatisticSearch/ERVMMPDVK98I2E6IZ8GZ/json/kr/1/20/101Y004/MM/' + start + '/' + end + '/BBHS00';
     var r     = await fetch(PROXY + encodeURIComponent(url));
     var j     = await r.json();
-    var rows  = j.StatisticSearch.row;
+    var rows = j.StatisticSearch ? j.StatisticSearch.row : j.StatisticSearch_row || [];
+    if (!rows || rows.length === 0) return null;
     rows.sort(function(a,b){ return b.TIME.localeCompare(a.TIME); });
     return rows;
   } catch(e) {
@@ -450,6 +451,8 @@ async function load() {
       '<span style="color:#ffcc00;font-family:\'IBM Plex Mono\',monospace;font-size:10px">' +
       (next ? next.replace(/-/g,'.') : '일정 확인 필요') + '</span>';
 
+    if (!m2) { document.getElementById('m2-val').innerHTML = '--<span class="info-unit">조</span>'; }
+    else {
     var mv = parseFloat(m2[0].DATA_VALUE.replace(/,/g,''));
     var jo = Math.round(mv / 10000);
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
