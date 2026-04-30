@@ -329,7 +329,7 @@ const FOMC = [
   '2027-01-27','2027-03-17','2027-04-28','2027-06-09',
   '2027-07-28','2027-09-15','2027-10-27','2027-12-08',
 ];
-
+  
 async function fred(id, n) {
   const url = 'https://api.stlouisfed.org/fred/series/observations'
     + '?series_id=' + id + '&api_key=' + KEY
@@ -337,6 +337,21 @@ async function fred(id, n) {
   const r = await fetch(PROXY + encodeURIComponent(url));
   const j = await r.json();
   return j.observations.filter(function(o){ return o.value !== '.' && o.value !== ''; });
+}
+  
+async function ecosFetch() {
+  try {
+    var today = new Date();
+    var end   = today.getFullYear() + String(today.getMonth()+1).padStart(2,'0');
+    var d13   = new Date(today.setMonth(today.getMonth()-13));
+    var start = d13.getFullYear() + String(d13.getMonth()+1).padStart(2,'0');
+    var url   = 'https://ecos.bok.or.kr/api/StatisticSearch/ERVMMPDVK98I2E6IZ8GZ/json/kr/1/20/101Y004/MM/' + start + '/' + end + '/BBHS00';
+    var r     = await fetch(PROXY + encodeURIComponent(url));
+    var j     = await r.json();
+    var rows  = j.StatisticSearch.row;
+    rows.sort(function(a,b){ return b.TIME.localeCompare(a.TIME); });
+    return rows;
+  } catch(e) { return null; }
 }
 
 async function getFG() {
@@ -391,7 +406,7 @@ async function load() {
     var rrp = await fred('RRPONTSYD',     2);
     var vix = await fred('VIXCLS',        2);
     var dff = await fred('DFEDTARU',           2);
-    var m2  = await fred('MYAGM2KRM189S', 14);
+    var m2  = await ecosFetch();
 
     setLiq('res', res, 1e6);
     setLiq('tga', tga, 1e6);
@@ -415,11 +430,11 @@ async function load() {
       '<span style="color:#ffcc00;font-family:\'IBM Plex Mono\',monospace;font-size:10px">' +
       (next ? next.replace(/-/g,'.') : '일정 확인 필요') + '</span>';
 
-    var mv = parseFloat(m2[0].value);
-    var jo = Math.round(mv / 1000);
+    var mv = parseFloat(m2[0].DATA_VALUE.replace(/,/g,''));
+    var jo = Math.round(mv / 10000);
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
     if (m2.length >= 13) {
-      var prev = parseFloat(m2[12].value);
+      var prev = parseFloat(m2[12].DATA_VALUE.replace(/,/g,''));
       var yoy  = ((mv - prev) / prev * 100).toFixed(1);
       var yc   = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
       document.getElementById('m2-yoy').innerHTML =
