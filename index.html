@@ -331,12 +331,22 @@ const FOMC = [
 ];
   
 async function fred(id, n) {
-  const url = 'https://api.stlouisfed.org/fred/series/observations'
+  var url = 'https://api.stlouisfed.org/fred/series/observations'
     + '?series_id=' + id + '&api_key=' + KEY
     + '&file_type=json&sort_order=desc&limit=' + n;
-  const r = await fetch(PROXY + encodeURIComponent(url));
-  const j = await r.json();
-  return j.observations.filter(function(o){ return o.value !== '.' && o.value !== ''; });
+  var proxies = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.org/?',
+  ];
+  for (var i = 0; i < proxies.length; i++) {
+    try {
+      var r = await fetch(proxies[i] + encodeURIComponent(url));
+      var j = await r.json();
+      return j.observations.filter(function(o){ return o.value !== '.' && o.value !== ''; });
+    } catch(e) { continue; }
+  }
+  throw new Error('All proxies failed: ' + id);
 }
   
 async function ecosFetch() {
