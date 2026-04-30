@@ -425,15 +425,15 @@ async function load() {
     var mv = parseFloat(m2Item.DATA_VALUE); // 십억원
     var jo = Math.round(mv / 1000);        // 조원
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
-    if (m2.length >= 13) {
-      var prev = parseFloat(m2[12].value);
-      var yoy  = ((mv - prev) / prev * 100).toFixed(1);
-      var yc   = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
-      document.getElementById('m2-yoy').innerHTML =
-        '<span style="color:' + yc + '">' + (parseFloat(yoy)>=0?'+':'') + yoy + '%</span>';
-      document.getElementById('m2-bar').style.width =
-        Math.min(Math.max(parseFloat(yoy)/10*100, 0), 100) + '%';
-    }
+    //if (m2.length >= 13) {
+      //var prev = parseFloat(m2[12].value);
+      //var yoy  = ((mv - prev) / prev * 100).toFixed(1);
+      //var yc   = parseFloat(yoy) >= 0 ? '#00e5a0' : '#ff4d6a';
+      //document.getElementById('m2-yoy').innerHTML =
+        //'<span style="color:' + yc + '">' + (parseFloat(yoy)>=0?'+':'') + yoy + '%</span>';
+      //document.getElementById('m2-bar').style.width =
+        //Math.min(Math.max(parseFloat(yoy)/10*100, 0), 100) + '%';
+    //}
 
     var fg = await getFG();
     if (fg !== null) {
