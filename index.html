@@ -453,8 +453,7 @@ async function load() {
 
     if (!m2) { document.getElementById('m2-val').innerHTML = '--<span class="info-unit">조</span>'; }
     else {
-    var mv = parseFloat(m2[0].DATA_VALUE.replace(/,/g,''));
-    var jo = Math.round(mv / 10000);
+    var prev = parseFloat(m2[12].value);
     document.getElementById('m2-val').innerHTML = jo.toLocaleString() + '<span class="info-unit">조</span>';
     if (m2.length >= 13) {
       var prev = parseFloat(m2[12].DATA_VALUE.replace(/,/g,''));
